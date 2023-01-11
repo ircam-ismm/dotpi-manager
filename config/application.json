@@ -1,0 +1,13 @@
+{
+  name: 'dotpi.manager',
+  author: '',
+  clients: {
+    thing: {
+      target: 'node',
+    },
+    controller: {
+      target: 'browser',
+      default: true,
+    },
+  },
+}
