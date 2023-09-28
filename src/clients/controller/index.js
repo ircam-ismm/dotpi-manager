@@ -2,10 +2,14 @@ import '@soundworks/helpers/polyfills.js';
 import { Client } from '@soundworks/core/client.js';
 import launcher from '@soundworks/helpers/launcher.js';
 
-import { html } from 'lit';
-import createLayout from './views/layout.js';
-import '@ircam/simple-components/sc-toggle.js';
-import '../components/dotpi-controls.js'
+import { html, render } from 'lit';
+
+import '@ircam/sc-components/sc-button.js';
+import '../components/sw-audit.js';
+import '../components/dotpi-controls.js';
+import '../components/dotpi-client-list.js';
+import '../components/dotpi-log.js';
+
 
 // - General documentation: https://soundworks.dev/
 // - API documentation:     https://soundworks.dev/api
@@ -15,93 +19,67 @@ import '../components/dotpi-controls.js'
 const config = window.SOUNDWORKS_CONFIG;
 
 async function main($container) {
-  try {
-    const client = new Client(config);
+  const client = new Client(config);
 
-    // client.pluginManager.register(pluginName, pluginFactory, {options}, [dependencies])
+  // client.pluginManager.register(pluginName, pluginFactory, {options}, [dependencies])
 
-    launcher.register(client, {
-      initScreensContainer: $container,
-      reloadOnVisibilityChange: false,
-    });
+  launcher.register(client, {
+    initScreensContainer: $container,
+    reloadOnVisibilityChange: false,
+  });
 
-    await client.start();
+  await client.start();
 
-    /* eslint-disable-next-line no-unused-vars */
-    const $layout = createLayout(client, $container);
+  const app = {
+    client, // soundworks client
+    rpiCollection: await client.stateManager.getCollection('rpi'),
+    rpiSeen: new Set(),
+    // list of client hostnames that are shown in the logs
+    logSelected: new Set(),
+    //
 
-    const dotpiSeen = new Map();
-    const dotpiConnected = new Map();
-    
-    client.stateManager.observe(async (schemaName, stateId, nodeId) => {
-      switch (schemaName) {
-        case 'dotpi':
-          const dotpiState = await client.stateManager.attach(schemaName, stateId);
-          const dotpiInfo = dotpiState.getValues();
-          const dotpiKey = `${dotpiInfo.laddress}:${dotpiInfo.lport}`;
-          console.log(`new dotpi: ${dotpiInfo.laddress}:${dotpiInfo.lport} | ${dotpiInfo.hostname}`);
+    init() {
+      this.rpiCollection.onAttach(pi => {
+        const hostname = pi.get('hostname');
+        // add to pi seen list, so we can track disconnections
+        this.rpiSeen.add(hostname);
+        this.logSelected.add(hostname);
 
-          dotpiState.onDetach(() => {
-            dotpiConnected.delete(dotpiKey);
-            $layout.requestUpdate();
-          });
-          
-          if (!dotpiSeen.has(dotpiKey)) {
-            dotpiSeen.set(dotpiKey, dotpiState);
-          }
-          dotpiConnected.set(dotpiKey, dotpiState);
-        
-          $layout.requestUpdate();
-          break;
-      }
-    });
+        // if no special selection has been made on the logs, add the new client to the list
+        // this cannot work has, as we keep the disconnected client into the list
+        //
+        if (this.logSelected.size === 0 || this.logSelected.size === this.rpiSeen.length - 1) {
+          console.log(`add ${hostname} to the logSelected list`);
+          this.logSelected.add(hostname);
+        }
 
-    // render($layout, dotpiConnected);
+        this.render();
+      }, true);
 
-    const widthDotpiDiv = 300;
-    const heightDotpiDiv = 60;
+      this.rpiCollection.onDetach(() => this.render());
 
-    //faire un component pour chaque pi display (cf dossier components)
+      this.render();
+    },
 
-    const dotpiControls = {
-      render() {
-        return html`
-          ${Array.from(dotpiConnected, ([key, state], idx) => {
-            return html`
-              <dotpi-controls
-                .state="${state}"
-                connected
-              ></dotpi-controls>
-            `
-          })}
-        `;
-      }
-    }
-    $layout.addComponent(dotpiControls);
+    render() {
+      render(html`
+        <header id="header">
+          <h1>${client.config.app.name} | ${client.role}</h1>
+          <sw-audit .client="${client}"></sw-audit>
+        </header>
+        <div id="main">
+          <div class="col-left">
+            <dotpi-controls .app=${this}></dotpi-controls>
+            <dotpi-client-list .app=${this}></dotpi-client-list>
+          </div>
 
-  } catch(err) {
-    console.error(err);
+          <dotpi-log .app=${this}></dotpi-log>
+        </div>
+      `, $container);
+    },
   }
+
+  app.init();
 }
 
 launcher.execute(main);
-
-// function render(layout, dotpiConnected) {
-//   console.log(layout);
-//   console.log(dotpiConnected)
-//   layout.addComponent(html`
-//     <div>
-//       <h1>Connected dotpi</h1>
-//       ${Array.from(dotpiConnected, ([key, state]) => {
-//         console.log(state);
-//         const dotpiInfo = state.getValues();
-//         return html`
-//           <div style="border: 5px yellow">
-//             <h2>${dotpiInfo.hostname}</h2>
-//             <h3>${dotpiInfo.laddress}:${dotpiInfo.lport}</h3>
-//           </div>
-//         `
-//       })}
-//     </div>
-//   `)
-// }

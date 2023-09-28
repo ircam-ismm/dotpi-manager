@@ -7,6 +7,8 @@
   --sw-font-color-error: #a94442;
   --sw-font-family: Consolas, monaco, monospace;
   --sw-font-size: 62.5%; // such that 1rem == 10px
+
+  --sw-header-height: 38px;
 }
 
 html, body {
@@ -29,4 +31,45 @@ body.loading {
   background-image: url(../../images/loader.gif);
   background-position: 50% 50%;
   background-repeat: no-repeat;
+}
+
+#header {
+  display: block;
+  height: var(--sw-header-height);
+  line-height: var(--sw-header-height);
+  background-color: #121212;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: 1px solid #343434;
+
+  h1 {
+    font-size: 12px;
+    margin: 0;
+    padding-left: 12px;
+  }
+}
+
+#main {
+  display: flex;
+  justify-content: space-between
+}
+
+.col-left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+
+  dotpi-controls {
+    height: 300px;
+  }
+
+  dotpi-client-list {
+    height: calc(100% - 300px);
+  }
+}
+
+dotpi-log {
+  width: 50%;
+  height: calc(100vh - var(--sw-header-height));
 }

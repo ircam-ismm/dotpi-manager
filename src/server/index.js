@@ -1,13 +1,14 @@
 import '@soundworks/helpers/polyfills.js';
 import { Server } from '@soundworks/core/server.js';
+import { DiscoveryServer } from '@ircam/node-discovery';
 
 import { loadConfig } from '../utils/load-config.js';
 import '../utils/catch-unhandled-errors.js';
-
-import { DiscoveryServer } from '@ircam/node-discovery';
-import net from 'net';
-
-import dotpiSchema from './schemas/dotpi.js';
+// schemas
+import clientSchema from './schemas/rpi.js';
+import globalSchema from './schemas/global.js';
+// controllers
+import { syncDirectory } from './controllers/sync-directory.js';
 
 // - General documentation: https://soundworks.dev/
 // - API documentation:     https://soundworks.dev/api
@@ -23,32 +24,26 @@ console.log(`
 --------------------------------------------------------
 `);
 
-/**
- * Create the soundworks server
- */
+
 const server = new Server(config);
 // configure the server for usage within this application template
 server.useDefaultApplicationTemplate();
 
-/**
- * Register plugins
- */
-// server.pluginManager.register('platform', pluginPlatform);
+server.stateManager.registerSchema('global', globalSchema);
+server.stateManager.registerSchema('rpi', clientSchema);
 
-/**
- * Register schemas
- */
-server.stateManager.registerSchema('dotpi', dotpiSchema);
-
-/**
- * Launch application (init plugins, http server, etc.)
- */
 await server.start();
 
+const global = await server.stateManager.create('global');
+const rpiCollection = await server.stateManager.getCollection('rpi');
 
+// register controllers
+syncDirectory(global, rpiCollection);
 
-// and do your own stuff!
+// run the discovery server
+const discoveryServer = new DiscoveryServer({
+  verbose: false,
+  payload: { serverPort: server.config.env.port }
+});
 
-// instanciate discovery server
-const discoveryServer = new DiscoveryServer({ verbose: false });
 discoveryServer.start();
