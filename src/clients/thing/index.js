@@ -76,7 +76,7 @@ async function bootstrap() {
 
     await client.start();
 
-    const rpi = await client.stateManager.create('rpi', {
+    const dotpi = await client.stateManager.create('dotpi', {
       address: linfo.address,
       port,
       hostname,
@@ -86,12 +86,11 @@ async function bootstrap() {
       isDebugClient,
     });
 
-    probeInternet(rpi, 10);
-    execCommand(rpi);
+    probeInternet(dotpi, 10);
+    execCommand(dotpi);
 
     // testing
-    testPushLogs(rpi);
-
+    // testPushLogs(dotpi);
   } catch(err) {
     console.error(err);
   }

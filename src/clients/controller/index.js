@@ -4,12 +4,10 @@ import launcher from '@soundworks/helpers/launcher.js';
 
 import { html, render } from 'lit';
 
-import '@ircam/sc-components/sc-button.js';
 import '../components/sw-audit.js';
 import '../components/dotpi-controls.js';
 import '../components/dotpi-client-list.js';
 import '../components/dotpi-log.js';
-
 
 // - General documentation: https://soundworks.dev/
 // - API documentation:     https://soundworks.dev/api
@@ -32,33 +30,65 @@ async function main($container) {
 
   const app = {
     client, // soundworks client
-    rpiCollection: await client.stateManager.getCollection('rpi'),
-    rpiSeen: new Set(),
+    global: await client.stateManager.attach('global'),
+    dotpiCollection: await client.stateManager.getCollection('dotpi'),
+
     // list of client hostnames that are shown in the logs
+    // @todo - move to global
     logSelected: new Set(),
     //
 
     init() {
-      this.rpiCollection.onAttach(pi => {
+      this.dotpiCollection.onAttach(pi => {
         const hostname = pi.get('hostname');
-        // add to pi seen list, so we can track disconnections
-        this.rpiSeen.add(hostname);
-        this.logSelected.add(hostname);
-
-        // if no special selection has been made on the logs, add the new client to the list
-        // this cannot work has, as we keep the disconnected client into the list
-        //
-        if (this.logSelected.size === 0 || this.logSelected.size === this.rpiSeen.length - 1) {
-          console.log(`add ${hostname} to the logSelected list`);
-          this.logSelected.add(hostname);
+        const address = pi.get('address');
+        const dotpiSeen = this.global.get('dotpiSeen');
+        // if not seen before, add to list
+        const dotpiInfos = dotpiSeen.find(entry => entry.hostname === hostname);
+        if (!dotpiInfos) {
+          const infos = { hostname, address };
+          dotpiSeen.push(infos);
         }
 
-        this.render();
+        this.logSelected.add(hostname);
+        this.global.set({ dotpiSeen });
       }, true);
 
-      this.rpiCollection.onDetach(() => this.render());
+      this.dotpiCollection.onDetach(() => this.render());
+
+      this.global.onUpdate(() => this.render());
 
       this.render();
+    },
+
+    _resize(e, direction) {
+      const { width, height } = e.currentTarget.parentElement.getBoundingClientRect();
+      const $prev = e.currentTarget.previousElementSibling;
+      const $next = e.currentTarget.nextElementSibling;
+
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = direction === 'vertical' ? 'ns-resize' : 'ex-resize';
+
+      const resize = e => {
+        if (direction === 'horizontal') {
+          // clientX should be relative to parentElement
+          const ratio = Math.max(0.02, Math.min(0.98, e.clientX / width));
+          $prev.style.width = `${ratio * 100}%`;
+          $next.style.width = `${(1 - ratio) * 100}%`;
+        } else if (direction === 'vertical') {
+           //clientY should be relative to parentElement
+          const ratio = Math.max(0.02, Math.min(0.98, e.clientY / height));
+          $prev.style.height = `${ratio * 100}%`;
+          $next.style.height = `${(1 - ratio) * 100}%`;
+        }
+      }
+
+      window.addEventListener('mousemove', resize);
+      window.addEventListener('mouseup', () => {
+        document.body.style.userSelect = 'auto';
+        document.body.style.cursor = 'auto';
+        window.removeEventListener('mousemove', resize);
+      });
     },
 
     render() {
@@ -70,10 +100,19 @@ async function main($container) {
         <div id="main">
           <div class="col-left">
             <dotpi-controls .app=${this}></dotpi-controls>
+            <div
+              class="horizontal-handle"
+              @mousedown=${e => this._resize(e, 'vertical')}
+            ></div>
             <dotpi-client-list .app=${this}></dotpi-client-list>
           </div>
 
-          <dotpi-log .app=${this}></dotpi-log>
+          <div
+            class="vertical-handle"
+            @mousedown=${e => this._resize(e, 'horizontal')}
+          ></div>
+
+          <dotpi-log class="col-right" .app=${this}></dotpi-log>
         </div>
       `, $container);
     },

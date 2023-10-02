@@ -52,24 +52,45 @@ body.loading {
 
 #main {
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
+  height: calc(100vh - var(--sw-header-height));
 }
 
 .col-left {
   width: 50%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 
   dotpi-controls {
-    height: 300px;
+    height: 430px;
+    min-width: 700px;
+    overflow: auto;
   }
 
   dotpi-client-list {
-    height: calc(100% - 300px);
+    border-top: 1px solid var(--sc-color-primary-3);
+    height: calc(100% - 430px);
   }
 }
 
+.vertical-handle {
+  width: 1px;
+  height: 100%;
+  background-color: var(--sc-color-primary-4);
+  cursor: ew-resize;
+}
+
+.horizontal-handle {
+  height: 1px;
+  width: 100%;
+  background-color: var(--sc-color-primary-4);
+  cursor: ns-resize;
+}
+
 dotpi-log {
+  position: relative;
+  z-index: 3;
   width: 50%;
   height: calc(100vh - var(--sw-header-height));
 }

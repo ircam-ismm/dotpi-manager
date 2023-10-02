@@ -7,7 +7,7 @@
 //     [ '--verbose', '--archive', '--delete', config.root_out+'/', user+'@'+host+':'+dir+'/' ],
 //     {env: process.env, stdio: 'inherit'});
 
-export function syncDirectory(globalState, rpiCollection) {
+export function syncDirectory(globalState, dotpiCollection) {
 
 }
 

@@ -71,17 +71,25 @@ class DotPiLog extends LitElement {
   static styles = css`
     :host {
       display: block;
-      background-color: var(--sw-light-background-color);
       width: 100%;
-      height: calc(100% - 40px);
-      border-left: 1px solid var(--sc-color-primary-3);
+      height: calc(100% - var(--sw-header-height));
     }
 
     header {
-      background-color: var(--sc-color-primary-1);
-      padding: 2px 0 12px;
+      background-color: #000000;
+      padding: 2px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      box-sizing: border-box;
+      height: 34px;
+    }
+
+    header h3 {
+      padding-left: 12px;
+    }
+
+    header > div {
+      display: flex;
     }
 
     header sc-button {
@@ -91,7 +99,7 @@ class DotPiLog extends LitElement {
     .logs {
       background-color: var(--sc-color-primary-3);
       overflow-y: auto;
-      height: calc(100% - 44px);
+      height: calc(100% - 34px);
     }
 
     .log {
@@ -155,18 +163,24 @@ class DotPiLog extends LitElement {
 
     return html`
       <header>
-        <sc-button
-          .selected=${this._showOnly === 'stderr'}
-          @input=${e => this._toggleShowOnly('stderr')}
-        >stderr (${this.stack.numErr})</sc-button>
-        <sc-status
-          ?active=${!this._hasNewErrors}
-          @click=${e => this._hasNewErrors = false}
-        ></sc-status>
-        <sc-icon
-          type="close"
-          @input=${e => this._clearStack()}
-        >clear</sc-icon>
+        <H3>Logs</H3>
+        <div>
+          <sc-button
+            title="filter errors"
+            .selected=${this._showOnly === 'stderr'}
+            @input=${e => this._toggleShowOnly('stderr')}
+          >stderr (${this.stack.numErr})</sc-button>
+          <sc-status
+            title="has errors"
+            ?active=${!this._hasNewErrors}
+            @click=${e => this._hasNewErrors = false}
+          ></sc-status>
+          <sc-icon
+            type="close"
+            title="clear all logs"
+            @input=${e => this._clearStack()}
+          >clear</sc-icon>
+        </div>
       </header>
       <section class="logs">
         ${repeat(filtered, log => log, log => {
@@ -215,7 +229,7 @@ class DotPiLog extends LitElement {
     // this.requestUpdate();
     // ------ end debug
 
-    this.app.rpiCollection.onUpdate((rpi, updates) => {
+    this.app.dotpiCollection.onUpdate((rpi, updates) => {
       const hostname = rpi.get('hostname');
 
       ['stdout', 'stderr'].forEach(type => {

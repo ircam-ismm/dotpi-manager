@@ -9,6 +9,9 @@ class DotPiClient extends LitElement {
     state: {
       type: Object,
     },
+    infos: {
+      type: Object,
+    },
     app: {
       state: true,
       hasChanged: () => true,
@@ -18,21 +21,23 @@ class DotPiClient extends LitElement {
   static styles = css`
     :host {
       display: block;
-      margin-bottom: 1px;
       height: 30px;
       background-color: var(--sw-light-background-color);
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+
+      --dotpi-controls-width: 200px;
     }
 
     .infos {
       display: flex;
       align-items: center;
-      margin-right: 20px;
       white-space: nowrap; 
       overflow: hidden;
       padding-left: 20px;
+      width: calc(100% - var(--dotpi-controls-width));
+      box-sizing: border-box;
     }
 
     .infos sc-text {
@@ -49,7 +54,7 @@ class DotPiClient extends LitElement {
       display: flex;
       justify-content: space-evenly;
       align-items: center;
-      width: 240px;
+      width: var(--dotpi-controls-width);
       background-color: rgb(18, 18, 18);
       border-left: 1px solid #454545;
     }
@@ -57,6 +62,11 @@ class DotPiClient extends LitElement {
     .controls sc-toggle, .controls sc-status {
       height: 25px;
       width: 25px;
+    }
+
+    .controls sc-toggle.show-logs {
+      /*border: 1px solid var(--sc-color-secondary-1);
+      --sc-toggle-active-color: var(--sc-color-secondary-1);*/
     }
   `;
 
@@ -82,28 +92,43 @@ class DotPiClient extends LitElement {
   }
   
   render() {
-    const hasInternet = this._state ? this._state.get('hasInternet') : false;
+    const { hostname, address } = this.infos;
     const connected = this._state ? true : false;
-    const showLogs = this.app.logSelected.has(this._hostname);
+    const hasInternet = this._state ? this._state.get('hasInternet') : false;
+    const showLogs = this.app.logSelected.has(hostname);
 
     return html`
       <div class="infos">
-        ${connected ? nothing :
-          html`<sc-icon type="close" @input=${this._clearItem}></sc-icon>`
+        ${connected ? nothing : html`
+          <sc-icon
+            type="close"
+            @input=${e => {
+              const event = new CustomEvent('clear', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                  value: hostname,
+                },
+              });
+
+              this.dispatchEvent(event);
+            }}
+          ></sc-icon>`
         }
-        <sc-text>${this._hostname}</sc-text>
-        <sc-text>${this._address}:${this._port}</sc-text>
+        <sc-text>${hostname}</sc-text>
+        <sc-text>[${address}]</sc-text>
       </div>
 
       <div class="controls">
         <sc-status ?active=${connected}></sc-status>
         <sc-status ?active=${hasInternet}></sc-status>
         <sc-toggle
+          class="show-logs"
           ?active=${showLogs}
           @change=${e => {
             e.detail.value
-              ? this.app.logSelected.add(this._hostname)
-              : this.app.logSelected.delete(this._hostname);
+              ? this.app.logSelected.add(hostname)
+              : this.app.logSelected.delete(hostname);
 
             this.app.render();
           }}
@@ -113,26 +138,8 @@ class DotPiClient extends LitElement {
     `
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  _clearItem(hostname) {
 
-    this._hostname = this._state.get('hostname');
-    this._address = this._state.get('address');
-    this._port = this._state.get('port');
-  }
-
-  _clearItem(e) {
-    e.stopPropagation();
-
-    const event = new CustomEvent('clear', {
-      bubbles: true,
-      composed: true,
-      detail: {
-        value: this._hostname,
-      },
-    });
-
-    this.dispatchEvent(event);
   }
 }
 

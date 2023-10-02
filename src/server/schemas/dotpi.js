@@ -47,12 +47,11 @@ export default {
     event: true,
   },
 
-  // must be local as we may want to control each client individualy
+  // commands
   execCmd: {
     type: 'string',
     default: '',
   },
-  // maybe should be stateful
   execCwd: {
     type: 'string',
     default: '',
@@ -67,38 +66,6 @@ export default {
   },
   execProcesses: {
     type: 'any',
-    default: [], // { cmd, pwd, pid }
-  },
-
-  forkCommand: {
-    type: 'string',
-    event: true,
-  },
-  // maybe should be stateful
-  forkPwd: {
-    type: 'string',
-    event: true,
-  },
-  forkStart: {
-    type: 'boolean',
-    event: true,
-  },
-  forkStop: {
-    type: 'integer', // pid
-    event: true,
-  },
-  forkedProcesses: {
-    type: 'any',
-    default: [], // { cmd, pwd, pid }
-  },
-
-  syncDirectory: {
-    type: 'string',
-    default: null,
-    nullable: true,
-  },
-  syncWatch: {
-    type: 'boolean',
-    default: false,
-  },
+    default: [],
+  }
 };
