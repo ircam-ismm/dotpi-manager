@@ -53,6 +53,15 @@ export default {
     default: true,
   },
 
+  reboot: {
+    type: 'boolean',
+    event: true,
+  },
+  shutdown: {
+    type: 'boolean',
+    event: true,
+  },
+
   // commands
   execCmd: {
     type: 'string',

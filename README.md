@@ -1,8 +1,25 @@
-# `dotpi-manager`
+# dotpi-manager
 
 ## Development notes
 
-Run client(s) locally using:
+Run the server:
+
+```sh
+npm run dev
+````
+
+Run some client(s) locally using:
+
+```sh
+EMULATE=1 npm run watch thing
 ```
-EMULATE=1 DEBUG=1 npm run watch thing
-```
+
+use `EMULATE=x` to run `x` clients
+
+## Credits
+
+## License
+
+[BSD-3-Clause](./LICENSE)
+
+

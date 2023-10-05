@@ -35,8 +35,16 @@ async function main($container) {
 
     // local list of client hostnames shown in the logs
     logSelected: new Set(),
+    notifications: new Set(),
 
-    init() {
+    async init() {
+      // ok in localhost
+      // Secure context: This feature is available only in secure contexts (HTTPS), in some or all supporting browsers.
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        // all is fine
+      }
+
       this.dotpiCollection.onAttach(async pi => {
         const hostname = pi.get('hostname');
         this.logSelected.add(hostname);
@@ -51,6 +59,7 @@ async function main($container) {
       this.render();
     },
 
+    // generalize, i.e. handle position of container and create a sc-component
     _resize(e, direction) {
       const { width, height } = e.currentTarget.parentElement.getBoundingClientRect();
       const $prev = e.currentTarget.previousElementSibling;
@@ -81,11 +90,60 @@ async function main($container) {
       });
     },
 
+    // // notifications must be accepted system wide for the browser.
+    // // cf. System Settings > Notifications
+    // _sendNotification(msg) {
+    //   const notification = new Notification('dotpi - manager', { body: msg, icon: './images/loader.gif' });
+    //   this.notifications.add(notification);
+
+    //   // const n = new Notification("My Great Song");
+    //   // document.addEventListener("visibilitychange", () => {
+    //   //   if (document.visibilityState === "visible") {
+    //   //     // The tab has become visible so clear the now-stale Notification.
+    //   //     n.close();
+    //   //   }
+    //   // });
+    // },
+
+    // _clearNotificatons() {
+    //   this.notifications.forEach(n => n.close());
+    //   this.notifications.clear();
+    // },
+
     render() {
       render(html`
         <header id="header">
           <h1>${client.config.app.name} | ${client.role}</h1>
-          <sw-audit .client="${client}"></sw-audit>
+
+          <!--
+          <sc-button
+            @click=${e => this._sendNotification('log', 'test notification')}
+          >Send notification</sc-button>
+          <sc-button
+            @click=${e => this._clearNotificatons('log', 'test notification')}
+          >Clear notification</sc-button>
+          -->
+          <div class="col-left">
+            <sw-audit .client="${client}"></sw-audit>
+            <sc-icon
+              type="redo"
+              @click=${e => {
+                const result = confirm('Are you sure you want to reboot the selected dotpi clients?');
+                if (result) {
+                  this.global.set({ reboot: true });
+                }
+              }}
+            ></sc-icon>
+            <sc-icon
+              type="shutdown"
+              @click=${e => {
+                const result = confirm('Are you sure you want to shutdown the selected dotpi clients?');
+                if (result) {
+                  this.global.set({ shutdown: true });
+                }
+              }}
+            ></sc-icon>
+          </div>
         </header>
         <div id="main">
           <div class="col-left">

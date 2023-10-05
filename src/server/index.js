@@ -13,7 +13,7 @@ import dotpiSchema from './schemas/dotpi.js';
 import globalSchema from './schemas/global.js';
 // controllers
 import { syncDirectory } from './controllers/sync-directory.js';
-import { forwardExecAndFork } from './controllers/forward-exec-and-fork.js';
+import { forwardCommands } from './controllers/forward-commands.js';
 import { logger } from './controllers/logger.js';
 
 // - General documentation: https://soundworks.dev/
@@ -53,7 +53,7 @@ const global = await server.stateManager.create('global', globalDefault);
 const dotpiCollection = await server.stateManager.getCollection('dotpi');
 
 // register controllers
-forwardExecAndFork(global, dotpiCollection);
+forwardCommands(global, dotpiCollection);
 syncDirectory(global, dotpiCollection);
 logger(server, global, dotpiCollection);
 

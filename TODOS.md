@@ -22,13 +22,18 @@
 - [x] filter clients on which the commands are executed
 - [x] lock path change when fork and syncWatch are active
 
-- [ ] shutdown
-- [ ] restart
+- [x] reboot
+- [x] shutdown
 
 - [ ] notifications
   https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API
+  + [x] test API
   + [ ] client disconnect
   + [ ] error received
+  + [ ] only if visibility is hidden
+  
+- [ ] DEV
+    + [ ] discovery broadcast doen't work if only localhost network interface exists
     
 - [x] dotpi lists
     + [x] seen but disconnect clients are just in window session memory, maybe this can be unpractical -> stored in globals
@@ -44,7 +49,7 @@
 - [ ] install / uninstall daemons for soundworks apps
 - [ ] DHCP / DNS / NAT 
     + [ ] handle ulimit https://github.com/collective-soundworks/soundworks/issues/46
-- [ ] 
+
 - [ ] test required dependencies on startup  (
     + [ ] rsync 3
     > rsync  version 2.6.9  protocol version 29

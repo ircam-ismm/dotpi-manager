@@ -40,7 +40,9 @@ class DotPiCommands extends LitElement {
 
     .align-right {
       text-align: right;
-/*      width: 79px;*/
+    }
+    .align-right:nth-of-type(2) {
+      width: 90px;
     }
   `;
 

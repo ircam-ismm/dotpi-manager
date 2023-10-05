@@ -1,5 +1,5 @@
 
-export function forwardExecAndFork(global, dotpiCollection) {
+export function forwardCommands(global, dotpiCollection) {
   global.onUpdate(updates => {
     for (let [key, value] of Object.entries(updates)) {
       switch (key) {
@@ -25,6 +25,16 @@ export function forwardExecAndFork(global, dotpiCollection) {
           dotpiStates.forEach(state => {
             state.set({ forkPwd, forkCmd, forkToggle: value });
           });
+          break;
+        }
+        case 'reboot': {
+          const dotpiStates = dotpiCollection.filter(state => state.get('cmdProcess'));
+          dotpiStates.forEach(state => state.set({ reboot: true }));
+          break;
+        }
+        case 'shutdown': {
+          const dotpiStates = dotpiCollection.filter(state => state.get('cmdProcess'));
+          dotpiStates.forEach(state => state.set({ shutdown: true }));
           break;
         }
       }

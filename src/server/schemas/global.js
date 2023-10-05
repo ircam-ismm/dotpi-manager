@@ -13,6 +13,15 @@ export default {
 
   // command: support only one exec, fork and sync at the same time for now
   // ...maybe improve this later
+  reboot: {
+    type: 'boolean',
+    event: true,
+  },
+  shutdown: {
+    type: 'boolean',
+    event: true,
+  },
+
   execPwd: {
     type: 'string',
     default: '',

@@ -24,9 +24,23 @@ class DotPiClientList extends LitElement {
       padding: 12px;
 
       --dotpi-icons-width: 200px;
+      --dotpi-client-list-header-height: 26px;
     }
 
     header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      height: var(--dotpi-client-list-header-height);
+    }
+
+    header h3 {
+      margin: 0;
+      height: var(--dotpi-client-list-header-height);
+      line-height: var(--dotpi-client-list-header-height);
+    }
+
+    .list-header {
       width: 100%;
       height: 30px;
       display: flex;
@@ -36,36 +50,36 @@ class DotPiClientList extends LitElement {
       overflow: auto;
     }
 
-    header .col-right {
+    .list-header sc-icon {
+      height: 25px;
+      width: 25px;
+      border: none;
+      background-color: transparent;
+    }
+
+    .list-header .col-right {
       display: flex;
       width: 100%;
       justify-content: flex-start;
       width: calc(100% - var(--dotpi-icons-width));
     }
 
-    header .col-right .filter {
+    .list-header .col-right .filter {
       width: 70px;
       background-color: transparent;
     }
 
-    header .col-right sc-text {
+    .list-header .col-right sc-text {
       height: 24px;
       line-height: 22px;
       padding: 0px 4px;
     }
 
-    header .icons {
+    .list-header .icons {
       display: flex;
       justify-content: space-evenly;
       align-items: center;
       width: var(--dotpi-icons-width);
-    }
-
-    sc-icon {
-      height: 25px;
-      width: 25px;
-      border: none;
-      background-color: transparent;
     }
 
     .list {
@@ -101,8 +115,10 @@ class DotPiClientList extends LitElement {
       .filter(infos => re.test(infos.hostname)); // apply filter
 
     return html`
-      <h3>clients</h3>
       <header>
+        <h3>clients</h3>
+      </header>
+      <div class="list-header">
         <div class="col-right">
           <sc-text class="filter">filter:</sc-text>
           <sc-text
@@ -113,7 +129,7 @@ class DotPiClientList extends LitElement {
         <div class="icons">
           <sc-icon disabled type="network" title="connected"></sc-icon>
           <sc-icon disabled type="internet" title="internet"></sc-icon>
-          <sc-icon disabled type="upload" title="syncing"></sc-icon>
+          <sc-icon disabled type="sync" title="syncing"></sc-icon>
           <sc-icon
             type="burger"
             title="logs"
@@ -141,7 +157,7 @@ class DotPiClientList extends LitElement {
             }}
           ></sc-icon>
         </div>
-      </header>
+      </div>
       <div class="list">
         ${repeat(dotpiList, infos => infos.hostname, infos => {
           const dotpi = this.app.dotpiCollection.find(dotpi => dotpi.get('hostname') === infos.hostname);

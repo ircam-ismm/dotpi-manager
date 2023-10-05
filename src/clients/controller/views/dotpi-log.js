@@ -174,21 +174,21 @@ class DotPiLog extends LitElement {
       <header>
         <H3>Logs</H3>
         <div>
-          <sc-button
-            title="filter errors"
-            .selected=${this._showOnly === 'stderr'}
-            @input=${e => this._toggleShowOnly('stderr')}
-          >stderr (${this.stack.numErr})</sc-button>
-          <sc-status
-            title="has errors"
-            ?active=${!this._hasNewErrors}
-            @click=${e => this._hasNewErrors = false}
-          ></sc-status>
           <sc-icon
             type="close"
             title="clear all logs"
             @input=${e => this._clearStack()}
           >clear</sc-icon>
+          <sc-status
+            title="has errors"
+            ?active=${!this._hasNewErrors}
+            @click=${e => this._hasNewErrors = false}
+          ></sc-status>
+          <sc-button
+            title="filter errors"
+            .selected=${this._showOnly === 'stderr'}
+            @input=${e => this._toggleShowOnly('stderr')}
+          >stderr (${this.stack.numErr})</sc-button>
         </div>
       </header>
       <section class="logs">
