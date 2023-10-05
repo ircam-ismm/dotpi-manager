@@ -39,12 +39,18 @@ export default {
   },
 
   stdout: {
-    type: 'any', // cmd, cwd, msg
+    type: 'any', // cmd, pwd, msg
     event: true,
   },
   stderr: {
-    type: 'any', // cmd, cwd, msg
+    type: 'any', // cmd, pwd, msg
     event: true,
+  },
+
+  // define if the client should execute the commands
+  cmdProcess: {
+    type: 'boolean',
+    default: true,
   },
 
   // commands
@@ -52,7 +58,7 @@ export default {
     type: 'string',
     default: '',
   },
-  execCwd: {
+  execPwd: {
     type: 'string',
     default: '',
   },
@@ -67,5 +73,24 @@ export default {
   execProcesses: {
     type: 'any',
     default: [],
-  }
+  },
+
+  forkPwd: {
+    type: 'string',
+    default: '',
+  },
+  forkCmd: {
+    type: 'string',
+    default: '',
+  },
+  forkToggle: {
+    type: 'boolean',
+    event: true,
+  },
+
+  // for feedback when syncing is in progress
+  syncing: {
+    type: 'boolean',
+    default: false,
+  },
 };

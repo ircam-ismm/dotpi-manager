@@ -1,92 +1,76 @@
+import os from 'node:os';
+import { exec } from 'node:child_process';
+import chokidar from 'chokidar';
 
-// from https://techsparx.com/nodejs/deployment/rsync.html
-// var user = config.deploy_rsync.user;
-// var host = config.deploy_rsync.host;
-// var dir  = config.deploy_rsync.dir;
-// var rsync = spawn('rsync',
-//     [ '--verbose', '--archive', '--delete', config.root_out+'/', user+'@'+host+':'+dir+'/' ],
-//     {env: process.env, stdio: 'inherit'});
+const home = os.homedir();
 
-export function syncDirectory(globalState, dotpiCollection) {
+function doSync(dotpiList, localPathname, remotePathname) {
+  localPathname = localPathname.replace(/^~/, home);
 
+  dotpiList.forEach(dotpi => {
+    const user = dotpi.get('user');
+    const hostname = dotpi.get('hostname');
+    const home = dotpi.get('home');
+
+    remotePathname = remotePathname.replace(/^~/, home);
+
+    const dest = dotpi.get('isDebugClient')
+      ? remotePathname
+      : `${user}@${hostname}.local:${remotePathname}`;
+
+
+    // console.log('sync', localPathname, dest);
+    const cmd = `rsync --rsync-path='mkdir -p "${remotePathname}" && rsync'`
+      + ` --archive --exclude="node_modules" --delete-after`
+      + ` "${localPathname}/" "${dest}"`;
+
+    dotpi.set({ syncing: true });
+
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        console.log(err);
+      }
+
+      // @todo - do something with stdout and stderr (?)
+      dotpi.set({ syncing: false });
+    });
+  });
 }
 
-// // @todo - use tokens to retrieve feedback to the front-end
-// syncDirectory(event, localDirectory, remoteDirectory, tokens, clearTokens = true) {
-//   tokens.forEach(token => {
-//     const { hostname } = token.client;
+let watcher = null;
 
-//     let destinationDirectory = '';
-//     // we are in debug mode with locally emulated devices
-//     if (/debug/.test(hostname)) {
-//       destinationDirectory = remoteDirectory;
-//     } else {
-//       destinationDirectory = `pi@${hostname}.local:${remoteDirectory}`;
-//     }
+export function syncDirectory(global, dotpiCollection) {
+  global.onUpdate(updates => {
+    if ('syncTrigger' in updates) {
+      const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
 
-//     const cmd = `rsync --rsync-path='mkdir -p "${remoteDirectory}" && rsync'`
-//           + ` --archive --exclude="node_modules" --delete-after`
-//           + ` "${localDirectory}/" "${destinationDirectory}"`;
+      const localPathname = global.get('syncLocalPathname');
+      const remotePathname = global.get('syncRemotePathname');
 
-//     // console.log('cmd: ', cmd);
+      doSync(dotpiList, localPathname, remotePathname);
+    }
 
-//     exec(cmd, (err, stdout, stderr) => {
-//       if (err) {
-//         return console.error('Error: ', err);
-//       }
+    if ('syncWatch' in updates) {
+      const watch = updates.syncWatch;
 
-//       // console.log('stdout: ', stdout.toString());
-//       // console.log('stderr; ', stderr.toString());
+      if (watcher !== null) {
+        watcher.close(); // this is async, but no need to wait here
+        watcher = null;
+      }
 
-//       // token has { address, port } has rinfo does
-//       const msg = `"${remoteDirectory}" successfully synchronized\n`;
-//       this.mainWindow.webContents.send('device:stdout', token.client, msg);
+      if (watch) {
+        const localPathname = global.get('syncLocalPathname').replace(/^~/, home);
+        const remotePathname = global.get('syncRemotePathname');
 
-//       if (clearTokens) {
-//         this.mainWindow.webContents.send('device:clear-token', token.uuid);
-//       }
-//     });
-//   });
-// },
+        watcher = chokidar.watch(localPathname, {
+          ignored: 'node_modules',
+        });
 
-// // token system is absurd here
-// startWatchingDirectory(event, localDirectory, remoteDirectory, tokens) {
-//   const watchOptions = {
-//     ignoreDotFiles: true,
-//     ignoreUnreadableDir: true,
-//     ignoreNotPermitted: true,
-//     ignoreDirectoryPattern: /node_modules/,
-//     interval: 1,
-//   };
-
-//   watch.createMonitor(localDirectory, Object.assign({}, watchOptions), monitor => {
-//     this.watchInfos.monitor = monitor;
-//     this.watchInfos.tokens = tokens;
-
-//     // @note - try to delay to account for transpile time
-//     // this doesn't work because transpile is itself delayed by watch...
-//     // see if it creates problems in real situations
-//     const sync = debounce(() => {
-//       this.syncDirectory(event, localDirectory, remoteDirectory, tokens, false);
-//     }, 100);
-
-//     monitor.on('created', sync);
-//     monitor.on('changed', sync);
-//     monitor.on('removed', sync);
-
-//     tokens.forEach(token => {
-//       this.mainWindow.webContents.send('device:set-token-status', token.uuid, 'watching');
-//     });
-//   });
-// },
-
-// stopWatchingDirectory(event) {
-//   this.watchInfos.monitor.stop();
-
-//   this.watchInfos.tokens.forEach(token => {
-//     this.mainWindow.webContents.send('device:clear-token', token.uuid);
-//   });
-
-//   this.watchInfos.monitor = null;
-//   this.watchInfos.tokens = null;
-// },
+        watcher.on('all', () => {
+          const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
+          doSync(dotpiList, localPathname, remotePathname);
+        });
+      }
+    }
+  });
+}

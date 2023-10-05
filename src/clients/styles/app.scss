@@ -9,6 +9,9 @@
   --sw-font-size: 62.5%; // such that 1rem == 10px
 
   --sw-header-height: 38px;
+
+  /** app specific **/
+  --dotpi-command-height: 460px;
 }
 
 html, body {
@@ -62,15 +65,14 @@ body.loading {
   display: flex;
   flex-direction: column;
 
-  dotpi-controls {
-    height: 430px;
+  dotpi-commands {
+    height: var(--dotpi-command-height);
     min-width: 700px;
     overflow: auto;
   }
 
   dotpi-client-list {
-    border-top: 1px solid var(--sc-color-primary-3);
-    height: calc(100% - 430px);
+    height: calc(100% - var(--dotpi-command-height));
   }
 }
 

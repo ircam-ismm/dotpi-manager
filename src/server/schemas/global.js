@@ -1,21 +1,19 @@
 export default {
 
-  // list of dotpi clients that have been seen since the
   dotpiSeen: {
     type: 'any',
     default: [],
   },
-
-  // list of hostnames that should execute commands
-  cmdFilter: {
-    type: 'any',
-    default: [],
+  // work around the missing set type,
+  // cf. https://github.com/collective-soundworks/soundworks/issues/67
+  dotpiSeenDeleteRequest: {
+    type: 'string',
+    event: true,
   },
 
   // command: support only one exec, fork and sync at the same time for now
   // ...maybe improve this later
-
-  execCwd: {
+  execPwd: {
     type: 'string',
     default: '',
   },
@@ -31,10 +29,6 @@ export default {
     type: 'boolean', // pid
     event: true,
   },
-  // execProcesses: {
-  //   type: 'any',
-  //   default: [], // { cmd, pwd, pid }
-  // },
 
   forkPwd: {
     type: 'string',
@@ -48,14 +42,7 @@ export default {
     type: 'boolean',
     event: true,
   },
-  // forkStop: {
-  //   type: 'integer', // pid
-  //   event: true,
-  // },
-  // forkedProcesses: {
-  //   type: 'any',
-  //   default: [], // { cmd, pwd, pid }
-  // },
+
 
   syncLocalPathname: {
     type: 'string',
@@ -67,17 +54,16 @@ export default {
     default: null,
     nullable: true,
   },
-  syncDirectory: {
-    type: 'string',
-    default: null,
-    nullable: true,
+  syncTrigger: {
+    type: 'boolean',
+    event: true,
   },
   syncWatch: {
     type: 'boolean',
     default: false,
   },
-  syncErr: {
-    type: 'string',
-    event: true,
-  },
+  // syncErr: {
+  //   type: 'string',
+  //   event: true,
+  // },
 };

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 
 import '@soundworks/helpers/polyfills.js';
 import { Server } from '@soundworks/core/server.js';
+import pluginLogger from '@soundworks/plugin-logger/server.js';
 import { DiscoveryServer } from '@ircam/node-discovery';
 
 import { loadConfig } from '../utils/load-config.js';
@@ -12,6 +13,8 @@ import dotpiSchema from './schemas/dotpi.js';
 import globalSchema from './schemas/global.js';
 // controllers
 import { syncDirectory } from './controllers/sync-directory.js';
+import { forwardExecAndFork } from './controllers/forward-exec-and-fork.js';
+import { logger } from './controllers/logger.js';
 
 // - General documentation: https://soundworks.dev/
 // - API documentation:     https://soundworks.dev/api
@@ -39,6 +42,8 @@ const server = new Server(config);
 // configure the server for usage within this application template
 server.useDefaultApplicationTemplate();
 
+server.pluginManager.register('logger', pluginLogger, { dirname: 'logs' });
+
 server.stateManager.registerSchema('global', globalSchema);
 server.stateManager.registerSchema('dotpi', dotpiSchema);
 
@@ -47,46 +52,50 @@ await server.start();
 const global = await server.stateManager.create('global', globalDefault);
 const dotpiCollection = await server.stateManager.getCollection('dotpi');
 
+// register controllers
+forwardExecAndFork(global, dotpiCollection);
+syncDirectory(global, dotpiCollection);
+logger(server, global, dotpiCollection);
+
+// store current command infos into file (could be an interesting preset pattern...)
 global.onUpdate(updates => {
-  for (let [key, value] of Object.entries(updates)) {
-    switch (key) {
-      case 'execTrigger': {
-        // filter collection according to `cmdFilter`
-        const dotpiStates = dotpiCollection.filter(state => {
-          return true;
-        });
-
-        const execCwd = global.get('execCwd');
-        const execCmd = global.get('execCmd');
-
-        dotpiStates.forEach(state => {
-          state.set({ execCwd, execCmd, execTrigger: true });
-        });
-        break;
-      }
-    }
-  }
-
-  // store current state for reload on restart
   const toStore = [
-    'execCwd',
+    'execPwd',
     'execCmd',
     'forkPwd',
     'forkCmd',
     'syncLocalPathname',
     'syncRemotePathname',
   ];
+
   const keys = Object.keys(updates);
   const intersection = toStore.filter(key => keys.includes(key));
+
   if (intersection.length) {
     const values = {};
     toStore.forEach(key => values[key] = global.get(key));
     fs.writeFileSync(storeFile, JSON.stringify(values));
   }
+
+  if ('dotpiSeenDeleteRequest' in updates) {
+    const hostname = updates.dotpiSeenDeleteRequest;
+    const dotpiSeen = global.get('dotpiSeen');
+    const index = dotpiSeen.findIndex(entry => entry.hostname === hostname);
+    if (index !== -1) {
+      dotpiSeen.splice(index, 1);
+      global.set({ dotpiSeen });
+    };
+  }
 });
 
-// register controllers
-syncDirectory(global, dotpiCollection);
+dotpiCollection.onAttach(dotpi => {
+  const hostname = dotpi.get('hostname');
+  const address = dotpi.get('address');
+
+  const dotpiSeen = new Set(global.get('dotpiSeen'));
+  dotpiSeen.add({ hostname, address });
+  global.set({ dotpiSeen: Array.from(dotpiSeen) });
+});
 
 // run the discovery server
 const discoveryServer = new DiscoveryServer({

@@ -10,28 +10,28 @@ export function execCommand(dotpi) {
       const uid = dotpi.get('uid');
       const cmd = dotpi.get('execCmd');
       // allow using tilde in exec paths
-      const cwd = dotpi.get('execCwd').replace(/^~/, home);
-      const execInfos = { cmd, cwd };
+      const pwd = dotpi.get('execPwd').replace(/^~/, home);
+      const execInfos = { cmd, pwd };
 
-      // check that cwd does exsits
-      if (!fs.existsSync(cwd)) {
-        const log = { cmd, cwd, log: `${cwd}: No such file or directory` };
+      // check that pwd does exsits
+      if (!fs.existsSync(pwd)) {
+        const log = { cmd, pwd, msg: `${pwd}: No such file or directory\n` };
         dotpi.set({ stderr: log });
         return;
       }
 
-      const childProcess = exec(cmd, { cwd, uid }, (err, stdout, stderr) => {
+      const childProcess = exec(cmd, { pwd, uid }, (err, stdout, stderr) => {
         if (err) {
           dotpi.set({ stderr: err.message });
         }
 
         if (stdout) {
-          const log = { cmd, cwd, msg: stdout };
+          const log = { cmd, pwd, msg: stdout };
           dotpi.set({ stdout: log });
         }
 
         if (stderr) {
-          const log = { cmd, cwd, msg: stderr };
+          const log = { cmd, pwd, msg: stderr };
           dotpi.set({ stderr: log });
         }
 

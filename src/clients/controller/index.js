@@ -5,9 +5,9 @@ import launcher from '@soundworks/helpers/launcher.js';
 import { html, render } from 'lit';
 
 import '../components/sw-audit.js';
-import '../components/dotpi-controls.js';
-import '../components/dotpi-client-list.js';
-import '../components/dotpi-log.js';
+import './views/dotpi-commands.js';
+import './views/dotpi-client-list.js';
+import './views/dotpi-log.js';
 
 // - General documentation: https://soundworks.dev/
 // - API documentation:     https://soundworks.dev/api
@@ -33,25 +33,15 @@ async function main($container) {
     global: await client.stateManager.attach('global'),
     dotpiCollection: await client.stateManager.getCollection('dotpi'),
 
-    // list of client hostnames that are shown in the logs
-    // @todo - move to global
+    // local list of client hostnames shown in the logs
     logSelected: new Set(),
-    //
 
     init() {
-      this.dotpiCollection.onAttach(pi => {
+      this.dotpiCollection.onAttach(async pi => {
         const hostname = pi.get('hostname');
-        const address = pi.get('address');
-        const dotpiSeen = this.global.get('dotpiSeen');
-        // if not seen before, add to list
-        const dotpiInfos = dotpiSeen.find(entry => entry.hostname === hostname);
-        if (!dotpiInfos) {
-          const infos = { hostname, address };
-          dotpiSeen.push(infos);
-        }
-
         this.logSelected.add(hostname);
-        this.global.set({ dotpiSeen });
+
+        this.render();
       }, true);
 
       this.dotpiCollection.onDetach(() => this.render());
@@ -99,7 +89,7 @@ async function main($container) {
         </header>
         <div id="main">
           <div class="col-left">
-            <dotpi-controls .app=${this}></dotpi-controls>
+            <dotpi-commands .app=${this}></dotpi-commands>
             <div
               class="horizontal-handle"
               @mousedown=${e => this._resize(e, 'vertical')}

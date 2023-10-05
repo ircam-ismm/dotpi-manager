@@ -10,7 +10,7 @@ export function testPushLogs(client) {
 
     client.set({ [type]: {
       cmd: 'mysupercommand -xrvs',
-      cwd: '/home/pi/apps/test',
+      pwd: '/home/pi/apps/test',
       msg: `\nmy super command output log from ${hostname} with index ${index}`,
     }});
 

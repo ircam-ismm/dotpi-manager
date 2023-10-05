@@ -11,6 +11,7 @@ import { loadConfig } from '../../utils/load-config.js';
 // controllers
 import { probeInternet } from './controllers/probe-internet.js';
 import { execCommand } from './controllers/exec-command.js';
+import { forkProcess } from './controllers/fork-process.js';
 // testing
 import { testPushLogs } from './testing/test-push-logs.js';
 
@@ -41,7 +42,8 @@ async function bootstrap() {
       isDebugClient = true;
     }
 
-    const home = execSync('echo $HOME').toString().replace(/\s$/g, '');
+    const home = os.homedir();
+    // @todo - maybe use os.userInfo()
     const user = execSync(`whoami`).toString().replace(/\s$/g, '');
     const uid = parseInt(execSync('id -u $(whoami)').toString());
 
@@ -88,6 +90,7 @@ async function bootstrap() {
 
     probeInternet(dotpi, 10);
     execCommand(dotpi);
+    forkProcess(dotpi);
 
     // testing
     // testPushLogs(dotpi);

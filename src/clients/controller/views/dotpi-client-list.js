@@ -86,13 +86,13 @@ class DotPiClientList extends LitElement {
     super();
 
     this._hostnameFilter = '';
-    this._allSelected = true;
+    this._allLogSelected = true;
+    this._allExecSelected = true;
   }
 
   render() {
     const re = new RegExp(this._hostnameFilter);
-    const dotpiSeen =  this.app.global.get('dotpiSeen');
-    const hostnames = dotpiSeen
+    const dotpiList = this.app.global.get('dotpiSeen')
       .sort() // sort by alphabetic order
       .sort(infos => { // move disconnected clients on top
         const found = this.app.dotpiCollection.find(rpi => rpi.get('hostname') === infos.hostname);
@@ -113,13 +113,14 @@ class DotPiClientList extends LitElement {
         <div class="icons">
           <sc-icon disabled type="network" title="connected"></sc-icon>
           <sc-icon disabled type="internet" title="internet"></sc-icon>
+          <sc-icon disabled type="upload" title="syncing"></sc-icon>
           <sc-icon
             type="burger"
             title="logs"
             @click=${e => {
-              this._allSelected = !this._allSelected;
+              this._allLogSelected = !this._allLogSelected;
 
-              if (this._allSelected) {
+              if (this._allLogSelected) {
                 const dotpiSeen = this.app.global.get('dotpiSeen');
                 dotpiSeen.forEach(infos => this.app.logSelected.add(infos.hostname));
               } else {
@@ -132,11 +133,17 @@ class DotPiClientList extends LitElement {
           <sc-icon
             type="prompt"
             title="execute"
+            @click=${e => {
+              this._allExecSelected = !this._allExecSelected;
+              // manipulate the dotpiCollection directly (not perfect but it works)
+              this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
+              this.requestUpdate();
+            }}
           ></sc-icon>
         </div>
       </header>
       <div class="list">
-        ${repeat(hostnames, hostname => hostname, infos => {
+        ${repeat(dotpiList, infos => infos.hostname, infos => {
           const dotpi = this.app.dotpiCollection.find(dotpi => dotpi.get('hostname') === infos.hostname);
 
           return html`
@@ -144,18 +151,9 @@ class DotPiClientList extends LitElement {
               .state=${dotpi}
               .infos=${infos}
               .app=${this.app}
-              @clear=${async e => {
-                const hostname = e.detail.value;
-                const dotpiSeen = this.app.global.get('dotpiSeen');
-                const index = dotpiSeen.findIndex(infos => infos.hostname === hostname);
-
-                dotpiSeen.splice(index, 1);
-
-                await this.app.global.set({ dotpiSeen });
-                this.requestUpdate();
-              }}
+              @clear=${e => this.app.global.set({ dotpiSeenDeleteRequest: e.detail.value })}
             ></dotpi-client>
-          `
+          `;
         })}
       </div>
     `;

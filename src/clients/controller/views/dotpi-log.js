@@ -121,10 +121,19 @@ class DotPiLog extends LitElement {
     }
 
     .log header sc-text {
-      width: 50%;
       height: 100%;
       font-size: 10px;
       padding: 3px 6px;
+    }
+
+    .log header sc-text:first-child {
+      width: 40%;
+      user-select: none;
+    }
+
+    .log header sc-text:last-child {
+      width: 60%;
+      padding-right: 12px;
     }
 
     .log.stderr sc-text {
@@ -190,7 +199,7 @@ class DotPiLog extends LitElement {
                 @dblclick=${() => this._selectLogsFromHostname(log.hostname)}
               >
                 <sc-text>[${log.date.toLocaleString()}] ${log.hostname}</sc-text>
-                <sc-text style="text-align: right;">cmd: ${log.cmd} | cwd: ${log.cwd}</sc-text>
+                <sc-text style="text-align: right;">cmd: ${log.cmd} | pwd: ${log.pwd}</sc-text>
               </header>
               <sc-code-example language="text">${log.msg}</sc-code-example>
             </div>
@@ -210,7 +219,7 @@ class DotPiLog extends LitElement {
 
     // this.stack.insert({
     //   cmd: "mysupercommand -xrvs",
-    //   cwd: "/home/pi/apps/test",
+    //   pwd: "/home/pi/apps/test",
     //   date: new Date(),
     //   hostname: "dotpi-debug-client-87072",
     //   msg: "\nmy super command output log from dotpi-debug-client-87072 with index 13",
@@ -219,7 +228,7 @@ class DotPiLog extends LitElement {
 
     // this.stack.insert({
     //   cmd: "mysupercommand -xrvs",
-    //   cwd: "/home/pi/apps/test",
+    //   pwd: "/home/pi/apps/test",
     //   date: new Date(),
     //   hostname: "dotpi-debug-client-23",
     //   msg: "\nmy super command output log \nfrom dotpi-debug-client-87072 with index 13",
@@ -234,7 +243,7 @@ class DotPiLog extends LitElement {
 
       ['stdout', 'stderr'].forEach(type => {
         if (type in updates) {
-          const log = updates[type]; // { cwd, cwd, msgs }
+          const log = updates[type]; // { pwd, pwd, msgs }
           log.date = new Date();
           log.hostname = hostname;
           log.type = type;

@@ -3,6 +3,8 @@ Thumbs.db
 node_modules
 .build
 
-test
+tests
+logs
 
 db.json
+test.js
