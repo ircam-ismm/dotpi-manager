@@ -37,6 +37,10 @@ export default {
     type: 'boolean',
     default: false,
   },
+  testAudio: {
+    type: 'boolean',
+    event: true,
+  },
 
   stdout: {
     type: 'any', // cmd, pwd, msg

@@ -23,7 +23,7 @@ class DotPiClientList extends LitElement {
       height: 100%;
       padding: 12px;
 
-      --dotpi-icons-width: 200px;
+      --dotpi-icons-width: 240px;
       --dotpi-client-list-header-height: 26px;
     }
 
@@ -153,6 +153,15 @@ class DotPiClientList extends LitElement {
               this._allExecSelected = !this._allExecSelected;
               // manipulate the dotpiCollection directly (not perfect but it works)
               this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
+              this.requestUpdate();
+            }}
+          ></sc-icon>
+          <sc-icon
+            type="speaker"
+            title="execute"
+            @click=${e => {
+              // manipulate the dotpiCollection directly (not perfect but it works)
+              this.app.dotpiCollection.set({ testAudio: true });
               this.requestUpdate();
             }}
           ></sc-icon>

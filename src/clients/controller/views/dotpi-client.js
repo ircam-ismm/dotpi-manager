@@ -1,4 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
+import { live } from 'lit/directives/live.js';
+
+import '@ircam/sc-components/sc-bang.js';
 import '@ircam/sc-components/sc-toggle.js';
 import '@ircam/sc-components/sc-status.js';
 import '@ircam/sc-components/sc-icon.js';
@@ -27,7 +30,7 @@ class DotPiClient extends LitElement {
       flex-direction: row;
       justify-content: space-between;
 
-      --dotpi-controls-width: 200px;
+      --dotpi-controls-width: 240px;
     }
 
     .infos {
@@ -59,9 +62,14 @@ class DotPiClient extends LitElement {
       border-left: 1px solid #454545;
     }
 
-    .controls sc-toggle, .controls sc-status {
+    .controls sc-toggle, .controls sc-status, .controls sc-bang {
       height: 25px;
       width: 25px;
+    }
+
+    .controls sc-status.syncing {
+      --sc-status-color-inactive: var(--sc-color-primary-2);
+      --sc-status-color-active: var(--sc-color-primary-5);
     }
   `;
 
@@ -119,7 +127,7 @@ class DotPiClient extends LitElement {
       <div class="controls">
         <sc-status ?disabled=${!connected} ?active=${connected}></sc-status>
         <sc-status ?disabled=${!connected} ?active=${hasInternet}></sc-status>
-        <sc-status ?disabled=${!connected} ?active=${syncing}></sc-status>
+        <sc-status class="syncing" ?disabled=${!connected} ?active=${syncing}></sc-status>
         <sc-toggle
           ?active=${showLogs}
           @change=${e => {
@@ -135,6 +143,10 @@ class DotPiClient extends LitElement {
           ?active=${cmdProcess}
           @change=${e => this.state.set({ cmdProcess: e.detail.value })}
         ></sc-toggle>
+        <sc-bang
+          active=${live(this.state.set('testAudio'))}
+          @input=${e => this.state.set({ testAudio: true })}
+        ></sc-bang>
       </div>
     `
   }

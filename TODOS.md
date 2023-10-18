@@ -25,6 +25,12 @@
 - [x] reboot
 - [x] shutdown
 
+- [ ] test audio
+    + [ ] white noise
+    + [ ] sweep
+    
+- [ ] replace `const pwd = dotpi.get('execPwd').replace(/^~/, home);` w/ `execSync(`cd ${execPwd} && pwd`)`
+
 - [ ] notifications
   https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API
   + [x] test API
@@ -34,6 +40,7 @@
   
 - [ ] DEV
     + [ ] discovery broadcast doen't work if only localhost network interface exists
+    cf. https://en.wikipedia.org/wiki/Multicast_address
     
 - [x] dotpi lists
     + [x] seen but disconnect clients are just in window session memory, maybe this can be unpractical -> stored in globals
@@ -44,11 +51,13 @@
 
 - [ ] handle update and evolutions
     + [ ] auto update clients
-    + [ ] sync version between server and clients
+    + [ ] sync version between server and clientSeen
+    > should be the lowest possible level (i.e. bash) to not break
     
 - [ ] install / uninstall daemons for soundworks apps
 - [ ] DHCP / DNS / NAT 
     + [ ] handle ulimit https://github.com/collective-soundworks/soundworks/issues/46
+- [ ] Share internet big button
 
 - [ ] test required dependencies on startup  (
     + [ ] rsync 3

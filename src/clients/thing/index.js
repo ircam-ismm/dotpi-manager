@@ -13,6 +13,7 @@ import { probeInternet } from './controllers/probe-internet.js';
 import { execCommand } from './controllers/exec-command.js';
 import { forkProcess } from './controllers/fork-process.js';
 import { shutdown } from './controllers/shutdown.js';
+import { testAudio } from './controllers/test-audio.js';
 // testing
 import { testPushLogs } from './testing/test-push-logs.js';
 
@@ -93,6 +94,7 @@ async function bootstrap() {
     execCommand(dotpi);
     forkProcess(dotpi);
     shutdown(dotpi);
+    testAudio(dotpi);
 
     // testing
     // testPushLogs(dotpi);
