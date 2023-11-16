@@ -144,7 +144,7 @@ class DotPiClient extends LitElement {
           @change=${e => this.state.set({ cmdProcess: e.detail.value })}
         ></sc-toggle>
         <sc-bang
-          active=${live(this.state.set('testAudio'))}
+          active=${live(this.state.get('testAudio'))}
           @input=${e => this.state.set({ testAudio: true })}
         ></sc-bang>
       </div>
