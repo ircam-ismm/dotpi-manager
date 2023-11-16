@@ -22,7 +22,8 @@ export function execCommand(dotpi) {
 
       const childProcess = exec(cmd, { pwd, uid }, (err, stdout, stderr) => {
         if (err) {
-          dotpi.set({ stderr: err.message });
+          const log = { cmd, pwd, msg: err.msg };
+          dotpi.set({ stderr: log });
         }
 
         if (stdout) {
@@ -39,7 +40,7 @@ export function execCommand(dotpi) {
         dotpi.set({ execProcesses: Array.from(execProcesses) });
       });
 
-       // store pid so that we can kill a stuck process (todo)
+      // store pid so that we can kill a stuck process (todo)
       execInfos.pid = childProcess.pid;
       execProcesses.add(execInfos);
 
@@ -47,6 +48,6 @@ export function execCommand(dotpi) {
     }
 
     // is this something we need?
-    if ('execKill' in updates) {}
+    if ('execKill' in updates) { /* void*/ }
   });
 }
