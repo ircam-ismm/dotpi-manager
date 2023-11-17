@@ -22,7 +22,7 @@ export function execCommand(dotpi) {
 
       const childProcess = exec(cmd, { pwd, uid }, (err, stdout, stderr) => {
         if (err) {
-          const log = { cmd, pwd, msg: err.msg };
+          const log = { cmd, pwd, msg: err.message };
           dotpi.set({ stderr: log });
         }
 
