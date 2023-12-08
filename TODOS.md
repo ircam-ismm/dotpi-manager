@@ -53,3 +53,5 @@
 - [ ] DHCP / DNS / NAT 
     + [ ] handle ulimit https://github.com/collective-soundworks/soundworks/issues/46
 - [ ] Share internet big button
+
+- [ ] rsync 2 & 3 options, cf. _BACKUP-ISMM-STOCK.command

@@ -79,6 +79,7 @@ export default {
     type: 'boolean',
     event: true,
   },
+  // not implemented
   execKill: {
     type: 'boolean', // pid
     event: true,

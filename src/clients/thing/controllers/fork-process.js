@@ -60,7 +60,7 @@ export function forkProcess(dotpi) {
         const stdoutStack = new LogStack('stdout', dotpi, cmd, pwd);
         const stderrStack = new LogStack('stderr', dotpi, cmd, pwd);
         // spawn the process in detached mode
-        spawnedProcess = spawn(command, args, { pwd, uid, detached: true });
+        spawnedProcess = spawn(command, args, { cwd: pwd, uid, detached: true });
 
         spawnedProcess.stdout.on('data', data => stdoutStack.push(data.toString()));
         spawnedProcess.stderr.on('data', data => stderrStack.push(data.toString()));

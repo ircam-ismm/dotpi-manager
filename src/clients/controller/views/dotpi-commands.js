@@ -75,10 +75,12 @@ class DotPiCommands extends LitElement {
         <sc-bang
           @input=${e => this.app.global.set({ execTrigger: true })}
         ></sc-bang>
+        <!-- @todo
         <sc-text class="align-right">Kill</sc-text>
         <sc-bang
           @input=${e => this.app.global.set({ execKill: true })}
         ></sc-bang>
+        -->
       </div>
       <div class="exec">
         <h3>Fork process</h3>
@@ -87,7 +89,7 @@ class DotPiCommands extends LitElement {
           <sc-text
             editable
             ?disabled=${lockFork}
-            @change=${e => this.app.global.set({ forkCwd: e.detail.value })}
+            @change=${e => this.app.global.set({ forkPwd: e.detail.value })}
           >${this.app.global.get('forkPwd')}</sc-text>
         </div>
         <div>

@@ -20,7 +20,8 @@ export function execCommand(dotpi) {
         return;
       }
 
-      const childProcess = exec(cmd, { pwd, uid }, (err, stdout, stderr) => {
+      // cwd <string> | <URL> Current working directory of the child process. Default: process.cwd().
+      const childProcess = exec(cmd, { cwd: pwd, uid }, (err, stdout, stderr) => {
         if (err) {
           const log = { cmd, pwd, msg: err.message };
           dotpi.set({ stderr: log });

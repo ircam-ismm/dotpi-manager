@@ -2,17 +2,17 @@ import os from 'node:os';
 import { exec } from 'node:child_process';
 import chokidar from 'chokidar';
 
-const home = os.homedir();
+const localHome = os.homedir();
 
 function doSync(dotpiList, localPathname, remotePathname) {
-  localPathname = localPathname.replace(/^~/, home);
+  localPathname = localPathname.replace(/^~/, localHome);
 
   dotpiList.forEach(dotpi => {
     const user = dotpi.get('user');
     const hostname = dotpi.get('hostname');
-    const home = dotpi.get('home');
+    const remoteHome = dotpi.get('home');
 
-    remotePathname = remotePathname.replace(/^~/, home);
+    remotePathname = remotePathname.replace(/^~/, remoteHome);
 
     const dest = dotpi.get('isDebugClient')
       ? remotePathname
@@ -21,7 +21,7 @@ function doSync(dotpiList, localPathname, remotePathname) {
 
     // console.log('sync', localPathname, dest);
     const cmd = `rsync --rsync-path='mkdir -p "${remotePathname}" && rsync'`
-      + ` --archive --exclude="node_modules" --delete-after`
+      + ` --archive --exclude="node_modules" --delete`
       + ` "${localPathname}/" "${dest}"`;
 
     dotpi.set({ syncing: true });
@@ -42,11 +42,10 @@ let watcher = null;
 export function syncDirectory(global, dotpiCollection) {
   global.onUpdate(updates => {
     if ('syncTrigger' in updates) {
-      const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
-
       const localPathname = global.get('syncLocalPathname');
       const remotePathname = global.get('syncRemotePathname');
 
+      const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
       doSync(dotpiList, localPathname, remotePathname);
     }
 
@@ -59,13 +58,13 @@ export function syncDirectory(global, dotpiCollection) {
       }
 
       if (watch) {
-        const localPathname = global.get('syncLocalPathname').replace(/^~/, home);
+        const localPathname = global.get('syncLocalPathname');
         const remotePathname = global.get('syncRemotePathname');
 
-        watcher = chokidar.watch(localPathname, {
-          ignored: 'node_modules',
-        });
+        // launch chokidar watch
+        const absLocalPathname = global.get('syncLocalPathname').replace(/^~/, localHome);
 
+        watcher = chokidar.watch(absLocalPathname, { ignored: 'node_modules' });
         watcher.on('all', () => {
           const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
           doSync(dotpiList, localPathname, remotePathname);
