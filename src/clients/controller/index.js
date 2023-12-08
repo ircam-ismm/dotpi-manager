@@ -38,12 +38,11 @@ async function main($container) {
     notifications: new Set(),
 
     async init() {
-      // ok in localhost
-      // Secure context: This feature is available only in secure contexts (HTTPS), in some or all supporting browsers.
+      // require secure context: This feature is available only in secure contexts (HTTPS),
+      // in some or all supporting browsers.
+      // -> ok in localhost
       const result = await Notification.requestPermission();
-      if (result === 'granted') {
-        // all is fine
-      }
+      if (result === 'granted') {}
 
       this.dotpiCollection.onAttach(async pi => {
         const hostname = pi.get('hostname');

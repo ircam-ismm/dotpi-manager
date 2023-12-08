@@ -98,9 +98,10 @@ class DotPiClient extends LitElement {
     const { hostname, address } = this.infos;
     const connected = this._state ? true : false;
     const hasInternet = this._state ? this._state.get('hasInternet') : false;
+    const testAudio = this._state ? this._state.get('testAudio') : false;
     const syncing = this._state ? this._state.get('syncing') : false;
     const showLogs = this.app.logSelected.has(hostname);
-    const cmdProcess = this._state ? this._state.get('cmdProcess') : false;;
+    const cmdProcess = this._state ? this._state.get('cmdProcess') : false;
 
     return html`
       <div class="infos">
@@ -144,7 +145,8 @@ class DotPiClient extends LitElement {
           @change=${e => this.state.set({ cmdProcess: e.detail.value })}
         ></sc-toggle>
         <sc-bang
-          active=${live(this.state.get('testAudio'))}
+          ?disabled=${!connected}
+          ?active=${live(testAudio)}
           @input=${e => this.state.set({ testAudio: true })}
         ></sc-bang>
       </div>

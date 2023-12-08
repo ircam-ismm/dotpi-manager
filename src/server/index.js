@@ -94,6 +94,7 @@ dotpiCollection.onAttach(dotpi => {
 
   const dotpiSeen = new Set(global.get('dotpiSeen'));
   dotpiSeen.add({ hostname, address });
+
   global.set({ dotpiSeen: Array.from(dotpiSeen) });
 });
 
