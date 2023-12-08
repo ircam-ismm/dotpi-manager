@@ -81,6 +81,7 @@ global.onUpdate(updates => {
     const hostname = updates.dotpiSeenDeleteRequest;
     const dotpiSeen = global.get('dotpiSeen');
     const index = dotpiSeen.findIndex(entry => entry.hostname === hostname);
+
     if (index !== -1) {
       dotpiSeen.splice(index, 1);
       global.set({ dotpiSeen });
@@ -91,11 +92,13 @@ global.onUpdate(updates => {
 dotpiCollection.onAttach(dotpi => {
   const hostname = dotpi.get('hostname');
   const address = dotpi.get('address');
+  const dotpiSeen = global.get('dotpiSeen');
+  const index = dotpiSeen.findIndex(entry => entry.hostname === hostname);
 
-  const dotpiSeen = new Set(global.get('dotpiSeen'));
-  dotpiSeen.add({ hostname, address });
-
-  global.set({ dotpiSeen: Array.from(dotpiSeen) });
+  if (index === -1) {
+    dotpiSeen.push({ hostname, address });
+    global.set({ dotpiSeen: dotpiSeen });
+  }
 });
 
 // run the discovery server

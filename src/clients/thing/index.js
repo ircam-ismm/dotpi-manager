@@ -40,6 +40,7 @@ async function bootstrap() {
     } else {
       console.log('> DEBUG mode');
       hostname = `dotpi-debug-client-${parseInt(Math.random() * 1e5)}`;
+      // hostname = 'dotpi-debug-client-coucou';
       port = await getPort();
       isDebugClient = true;
     }
