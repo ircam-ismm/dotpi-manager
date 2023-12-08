@@ -1,4 +1,4 @@
-import { exec } from 'node:child_process';
+import { exec, execSync } from 'node:child_process';
 import fs from 'node:fs';
 
 const execProcesses = new Set();

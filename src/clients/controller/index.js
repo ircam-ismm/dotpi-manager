@@ -41,17 +41,28 @@ async function main($container) {
       // require secure context: This feature is available only in secure contexts (HTTPS),
       // in some or all supporting browsers.
       // -> ok in localhost
-      const result = await Notification.requestPermission();
-      if (result === 'granted') {}
+      const hasRequestPermission = await Notification.requestPermission();
+      if (hasRequestPermission === 'granted') {
+        document.addEventListener("visibilitychange", () => {
+          // tab has become visible so clear the now-stale notifications
+          if (document.visibilityState === "visible") {
+            this.notifications.forEach(n => n.close());
+            this.notifications.clear();
+          }
+        });
+      }
 
-      this.dotpiCollection.onAttach(async pi => {
-        const hostname = pi.get('hostname');
+      this.dotpiCollection.onAttach(async dotpi => {
+        const hostname = dotpi.get('hostname');
         this.logSelected.add(hostname);
 
         this.render();
       }, true);
 
-      this.dotpiCollection.onDetach(() => this.render());
+      this.dotpiCollection.onDetach(dotpi => {
+        this._sendNotification(`dotpi client disconnected:\n"${dotpi.get('hostname')}"`);
+        this.render();
+      });
 
       this.global.onUpdate(() => this.render());
 
@@ -89,39 +100,20 @@ async function main($container) {
       });
     },
 
-    // // notifications must be accepted system wide for the browser.
-    // // cf. System Settings > Notifications
-    // _sendNotification(msg) {
-    //   const notification = new Notification('dotpi - manager', { body: msg, icon: './images/loader.gif' });
-    //   this.notifications.add(notification);
-
-    //   // const n = new Notification("My Great Song");
-    //   // document.addEventListener("visibilitychange", () => {
-    //   //   if (document.visibilityState === "visible") {
-    //   //     // The tab has become visible so clear the now-stale Notification.
-    //   //     n.close();
-    //   //   }
-    //   // });
-    // },
-
-    // _clearNotificatons() {
-    //   this.notifications.forEach(n => n.close());
-    //   this.notifications.clear();
-    // },
+    // notifications must be accepted system wide for the browser.
+    // cf. System Settings > Notifications
+    _sendNotification(msg) {
+      if (document.hidden) {
+        const notification = new Notification('dotpi - manager', { body: msg, icon: './images/dots.png' });
+        this.notifications.add(notification);
+      }
+    },
 
     render() {
       render(html`
         <header id="header">
           <h1>${client.config.app.name} | ${client.role}</h1>
 
-          <!--
-          <sc-button
-            @click=${e => this._sendNotification('log', 'test notification')}
-          >Send notification</sc-button>
-          <sc-button
-            @click=${e => this._clearNotificatons('log', 'test notification')}
-          >Clear notification</sc-button>
-          -->
           <div class="col-left">
             <sw-audit .client="${client}"></sw-audit>
             <sc-icon

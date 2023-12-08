@@ -19,6 +19,8 @@
     + [x] watch
     + [x] feedback on controller
     + [?] do something with rsync output 
+- [ ] replace `const pwd = dotpi.get('execPwd').replace(/^~/, home);` w/ 
+              `const pwd = execSync('cd ${dotpi.get('execPwd')} && pwd')`
 - [x] filter clients on which the commands are executed
 - [x] lock path change when fork and syncWatch are active
 
@@ -26,17 +28,15 @@
 - [x] shutdown
 
 - [ ] test audio
-    + [ ] white noise
+    + [x] white noise
     + [ ] sweep
-    
-- [ ] replace `const pwd = dotpi.get('execPwd').replace(/^~/, home);` w/ `execSync(`cd ${execPwd} && pwd`)`
 
 - [ ] notifications
   https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API
   + [x] test API
-  + [ ] client disconnect
+  + [x] client disconnect
   + [ ] error received
-  + [ ] only if visibility is hidden
+  + [x] only if visibility is hidden
   
 - [ ] DEV
     + [ ] discovery broadcast doen't work if only localhost network interface exists
@@ -48,18 +48,8 @@
     > this is not completely satisfying
     cf. https://github.com/collective-soundworks/soundworks/issues/64
     cf. https://github.com/collective-soundworks/soundworks/issues/67
-
-- [ ] handle update and evolutions
-    + [ ] auto update clients
-    + [ ] sync version between server and clientSeen
-    > should be the lowest possible level (i.e. bash) to not break
     
 - [ ] install / uninstall daemons for soundworks apps
 - [ ] DHCP / DNS / NAT 
     + [ ] handle ulimit https://github.com/collective-soundworks/soundworks/issues/46
 - [ ] Share internet big button
-
-- [ ] test required dependencies on startup  (
-    + [ ] rsync 3
-    > rsync  version 2.6.9  protocol version 29
-    @note -> still the same after `brew install rsync`
