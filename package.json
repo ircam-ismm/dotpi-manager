@@ -28,8 +28,8 @@
     "chokidar": "^3.5.3",
     "get-port": "^7.0.0",
     "json5": "^2.2.2",
-    "lit": "^2.8.0",
-    "node-web-audio-api": "^0.12.0",
+    "lit": "^3.1.0",
+    "node-web-audio-api": "^0.14.0",
     "ping": "^0.4.4",
     "terminate": "^2.6.1"
   },
@@ -37,8 +37,8 @@
     "@ircam/eslint-config": "^1.2.0",
     "@soundworks/build": "^1.0.0-alpha.0",
     "@soundworks/create": "^1.0.0-alpha.7",
-    "concurrently": "^8.2.1",
-    "eslint": "^8.31.0",
-    "sass": "^1.57.1"
+    "concurrently": "^8.2.2",
+    "eslint": "^8.55.0",
+    "sass": "^1.69.5"
   }
 }
