@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@ircam/node-discovery": "^2.2.0",
-    "@ircam/sc-components": "^3.0.0-alpha.47",
+    "@ircam/sc-components": "^3.0.0-alpha.48",
     "@soundworks/core": "^4.0.0-alpha.14",
     "@soundworks/helpers": "^1.0.0-alpha.2",
     "@soundworks/plugin-logger": "^2.0.0-alpha.3",
