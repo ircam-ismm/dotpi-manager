@@ -129,10 +129,21 @@ class DotPiClientList extends LitElement {
         <div class="icons">
           <sc-icon disabled type="network" title="connected"></sc-icon>
           <sc-icon disabled type="internet" title="internet"></sc-icon>
-          <sc-icon disabled type="sync" title="syncing"></sc-icon>
+          <sc-icon disabled type="sync" title="syncing directory"></sc-icon>
+          <sc-icon disabled type="gear" title="executing process"></sc-icon>
+          <sc-icon
+            type="prompt"
+            title="filter actions"
+            @click=${e => {
+              this._allExecSelected = !this._allExecSelected;
+              // manipulate the dotpiCollection directly (not perfect but it works)
+              this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
+              this.requestUpdate();
+            }}
+          ></sc-icon>
           <sc-icon
             type="burger"
-            title="logs"
+            title="filter logs"
             @click=${e => {
               this._allLogSelected = !this._allLogSelected;
 
@@ -144,16 +155,6 @@ class DotPiClientList extends LitElement {
               }
 
               this.app.render();
-            }}
-          ></sc-icon>
-          <sc-icon
-            type="prompt"
-            title="execute"
-            @click=${e => {
-              this._allExecSelected = !this._allExecSelected;
-              // manipulate the dotpiCollection directly (not perfect but it works)
-              this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
-              this.requestUpdate();
             }}
           ></sc-icon>
           <sc-icon

@@ -67,7 +67,7 @@ class DotPiClient extends LitElement {
       width: 25px;
     }
 
-    .controls sc-status.syncing {
+    .controls sc-status.syncing, .controls sc-status.executing {
       --sc-status-color-inactive: var(--sc-color-primary-2);
       --sc-status-color-active: var(--sc-color-primary-5);
     }
@@ -100,6 +100,8 @@ class DotPiClient extends LitElement {
     const hasInternet = this._state ? this._state.get('hasInternet') : false;
     const testAudio = this._state ? this._state.get('testAudio') : false;
     const syncing = this._state ? this._state.get('syncing') : false;
+    const executing = this._state ? this._state.get('execProcesses').length > 0 : false;
+
     const showLogs = this.app.logSelected.has(hostname);
     const cmdProcess = this._state ? this._state.get('cmdProcess') : false;
 
@@ -129,6 +131,12 @@ class DotPiClient extends LitElement {
         <sc-status ?disabled=${!connected} ?active=${connected}></sc-status>
         <sc-status ?disabled=${!connected} ?active=${hasInternet}></sc-status>
         <sc-status class="syncing" ?disabled=${!connected} ?active=${syncing}></sc-status>
+        <sc-status class="executing" ?disabled=${!connected} ?active=${executing}></sc-status>
+        <sc-toggle
+          ?disabled=${!connected}
+          ?active=${cmdProcess}
+          @change=${e => this.state.set({ cmdProcess: e.detail.value })}
+        ></sc-toggle>
         <sc-toggle
           ?active=${showLogs}
           @change=${e => {
@@ -138,11 +146,6 @@ class DotPiClient extends LitElement {
 
             this.app.render();
           }}
-        ></sc-toggle>
-        <sc-toggle
-          ?disabled=${!connected}
-          ?active=${cmdProcess}
-          @change=${e => this.state.set({ cmdProcess: e.detail.value })}
         ></sc-toggle>
         <sc-bang
           ?disabled=${!connected}

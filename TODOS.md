@@ -1,6 +1,7 @@
 # Issues
 
 Error: error while querying config: DeviceNotAvailable
+-> was probably to restart spawn from @soundworks/helpers
 
 # TODOS
 
@@ -17,19 +18,20 @@ Error: error while querying config: DeviceNotAvailable
     + [ ] reverse log order -> new logs on bottom / problem with scroll behaviour
 
 - [x] execute command
-    + [ ] No feedback for long commands, e.g. npm install
+    + [x] Add feedback for long commands, e.g. npm install
 
 - [x] fork process
+    + [ ] Add feedback when process forked
 
 - [ ] synchronize directory
     + [x] trigger
     + [x] watch
     + [x] feedback on controller
     + [?] do something with rsync output 
-    + [ ] IMPORTANT - prevent rsync from erasing important informations
+    + [ ] IMPORTANT - how prevent rsync from erasing important informations
         i.e. if syncing into home, all ssh, etc. files are deleted, which breaks the RPi
     + [ ] global log when all devices are synced?
-    + [ ] debouce
+    + [x] debouce
     
 - [x] filter clients on which the commands are executed
 - [x] lock path change when fork and syncWatch are active
@@ -64,4 +66,4 @@ Error: error while querying config: DeviceNotAvailable
     + [ ] handle ulimit https://github.com/collective-soundworks/soundworks/issues/46
 - [ ] Share internet big button
 
-- [ ] rsync 2 & 3 options, cf. _BACKUP-ISMM-STOCK.command
+- [x] rsync 2 & 3 options, cf. BACKUP-ISMM-STOCK.command - looks good
