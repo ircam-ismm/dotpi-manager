@@ -1,6 +1,7 @@
 import os from 'node:os';
 import { exec } from 'node:child_process';
 import chokidar from 'chokidar';
+import debounce from 'lodash/debounce.js';
 
 const localHome = os.homedir();
 
@@ -64,11 +65,23 @@ export function syncDirectory(global, dotpiCollection) {
         // launch chokidar watch
         const absLocalPathname = global.get('syncLocalPathname').replace(/^~/, localHome);
 
-        watcher = chokidar.watch(absLocalPathname, { ignored: 'node_modules' });
-        watcher.on('all', () => {
+        watcher = chokidar.watch(absLocalPathname, {
+          ignored: 'node_modules',
+          // without this option all files trigger an `add` event at startup, which crashes rsync
+          ignoreInitial: true,
+        });
+
+        watcher.on('all', debounce(() => {
           const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
           doSync(dotpiList, localPathname, remotePathname);
+        }), 500, {
+          leading: true,
+          trailing: true,
         });
+
+        // do first sync on launch
+        const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
+        doSync(dotpiList, localPathname, remotePathname);
       }
     }
   });

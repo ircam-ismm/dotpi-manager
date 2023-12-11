@@ -1,4 +1,8 @@
-# TODOS.md
+# Issues
+
+Error: error while querying config: DeviceNotAvailable
+
+# TODOS
 
 - [x] Update layout and styles from latest soundworks
 - [x] Sketch a clean layout for controller
@@ -13,14 +17,20 @@
     + [ ] reverse log order -> new logs on bottom / problem with scroll behaviour
 
 - [x] execute command
+    + [ ] No feedback for long commands, e.g. npm install
+
 - [x] fork process
+
 - [ ] synchronize directory
     + [x] trigger
     + [x] watch
     + [x] feedback on controller
     + [?] do something with rsync output 
-- [ ] replace `const pwd = dotpi.get('execPwd').replace(/^~/, home);` w/ 
-              `const pwd = execSync('cd ${dotpi.get('execPwd')} && pwd')`
+    + [ ] IMPORTANT - prevent rsync from erasing important informations
+        i.e. if syncing into home, all ssh, etc. files are deleted, which breaks the RPi
+    + [ ] global log when all devices are synced?
+    + [ ] debouce
+    
 - [x] filter clients on which the commands are executed
 - [x] lock path change when fork and syncWatch are active
 
