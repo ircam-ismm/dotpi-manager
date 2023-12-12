@@ -5,6 +5,7 @@ import '@soundworks/helpers/polyfills.js';
 import { Server } from '@soundworks/core/server.js';
 import pluginLogger from '@soundworks/plugin-logger/server.js';
 import { DiscoveryServer } from '@ircam/node-discovery';
+import getPort from 'get-port';
 
 import { loadConfig } from '../utils/load-config.js';
 import '../utils/catch-unhandled-errors.js';
@@ -22,6 +23,9 @@ import { logger } from './controllers/logger.js';
 // - Wizard & Tools:        `npx soundworks`
 
 const config = loadConfig(process.env.ENV, import.meta.url);
+// pick a random port outside the port generally used by soundworks application
+const port = await getPort({ port: 9000, from: 9000 });
+config.env.port = port;
 
 let globalDefault = {};
 // try read stored values
