@@ -134,7 +134,7 @@ class DotPiClientList extends LitElement {
           <sc-icon
             type="prompt"
             title="filter actions"
-            @click=${e => {
+            @click=${async e => {
               this._allExecSelected = !this._allExecSelected;
               // manipulate the dotpiCollection directly (not perfect but it works)
               this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });

@@ -3,6 +3,13 @@
 Error: error while querying config: DeviceNotAvailable
 -> was probably to restart spawn from @soundworks/helpers
 
+# Urgent
+
+- [x] alphabetical order
+- [x] select / unselect all
+- [?] problem du 21
+- [x] prevent syncing into HOME
+
 # TODOS
 
 - [x] Update layout and styles from latest soundworks
@@ -22,6 +29,7 @@ Error: error while querying config: DeviceNotAvailable
 
 - [x] fork process
     + [ ] Add feedback when process forked
+    + [ ] problem when launching jack
 
 - [ ] synchronize directory
     + [x] trigger

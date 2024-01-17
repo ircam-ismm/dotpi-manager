@@ -135,7 +135,7 @@ class DotPiClient extends LitElement {
         <sc-toggle
           ?disabled=${!connected}
           ?active=${cmdProcess}
-          @change=${e => this.state.set({ cmdProcess: e.detail.value })}
+          @change=${e => this._state.set({ cmdProcess: e.detail.value })}
         ></sc-toggle>
         <sc-toggle
           ?active=${showLogs}
@@ -150,7 +150,7 @@ class DotPiClient extends LitElement {
         <sc-bang
           ?disabled=${!connected}
           ?active=${live(testAudio)}
-          @input=${e => this.state.set({ testAudio: true })}
+          @input=${e => this._state.set({ testAudio: true })}
         ></sc-bang>
       </div>
     `
