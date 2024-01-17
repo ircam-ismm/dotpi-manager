@@ -107,7 +107,7 @@ class DotPiClientList extends LitElement {
   render() {
     const re = new RegExp(this._hostnameFilter);
     const dotpiList = this.app.global.get('dotpiSeen')
-      .sort() // sort by alphabetic order
+      .sort((a, b) => a.hostname < b.hostname ? -1 : 1) // sort by alphabetical order
       .sort(infos => { // move disconnected clients on top
         const found = this.app.dotpiCollection.find(rpi => rpi.get('hostname') === infos.hostname);
         return found ? 0 : -1;
