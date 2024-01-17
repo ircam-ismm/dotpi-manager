@@ -15,6 +15,13 @@ function doSync(dotpiList, localPathname, remotePathname) {
 
     remotePathname = remotePathname.replace(/^~/, remoteHome);
 
+    // prevent writing into home
+    // @todo - clean this
+    if (remotePathname.replace(/\/$/, '') === remoteHome.replace(/\/$/, '')) {
+      console.warn('sync abort: cannot sync into home');
+      return;
+    }
+
     const dest = dotpi.get('isDebugClient')
       ? remotePathname
       : `${user}@${hostname}.local:${remotePathname}`;
