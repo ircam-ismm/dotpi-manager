@@ -48,48 +48,49 @@ function doSync(dotpiList, localPathname, remotePathname) {
 let watcher = null;
 
 export function syncDirectory(global, dotpiCollection) {
-  global.onUpdate(updates => {
-    if ('syncTrigger' in updates) {
-      const localPathname = global.get('syncLocalPathname');
-      const remotePathname = global.get('syncRemotePathname');
+  console.log('> syncDirectory: @todo review');
+  // global.onUpdate(updates => {
+  //   if ('syncTrigger' in updates) {
+  //     const localPathname = global.get('syncLocalPathname');
+  //     const remotePathname = global.get('syncRemotePathname');
 
-      const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
-      doSync(dotpiList, localPathname, remotePathname);
-    }
+  //     const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
+  //     doSync(dotpiList, localPathname, remotePathname);
+  //   }
 
-    if ('syncWatch' in updates) {
-      const watch = updates.syncWatch;
+  //   if ('syncWatch' in updates) {
+  //     const watch = updates.syncWatch;
 
-      if (watcher !== null) {
-        watcher.close(); // this is async, but no need to wait here
-        watcher = null;
-      }
+  //     if (watcher !== null) {
+  //       watcher.close(); // this is async, but no need to wait here
+  //       watcher = null;
+  //     }
 
-      if (watch) {
-        const localPathname = global.get('syncLocalPathname');
-        const remotePathname = global.get('syncRemotePathname');
+  //     if (watch) {
+  //       const localPathname = global.get('syncLocalPathname');
+  //       const remotePathname = global.get('syncRemotePathname');
 
-        // launch chokidar watch
-        const absLocalPathname = global.get('syncLocalPathname').replace(/^~/, localHome);
+  //       // launch chokidar watch
+  //       const absLocalPathname = global.get('syncLocalPathname').replace(/^~/, localHome);
 
-        watcher = chokidar.watch(absLocalPathname, {
-          ignored: 'node_modules',
-          // without this option all files trigger an `add` event at startup, which crashes rsync
-          ignoreInitial: true,
-        });
+  //       watcher = chokidar.watch(absLocalPathname, {
+  //         ignored: 'node_modules',
+  //         // without this option all files trigger an `add` event at startup, which crashes rsync
+  //         ignoreInitial: true,
+  //       });
 
-        watcher.on('all', debounce(() => {
-          const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
-          doSync(dotpiList, localPathname, remotePathname);
-        }), 500, {
-          leading: true,
-          trailing: true,
-        });
+  //       watcher.on('all', debounce(() => {
+  //         const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
+  //         doSync(dotpiList, localPathname, remotePathname);
+  //       }), 500, {
+  //         leading: true,
+  //         trailing: true,
+  //       });
 
-        // do first sync on launch
-        const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
-        doSync(dotpiList, localPathname, remotePathname);
-      }
-    }
-  });
+  //       // do first sync on launch
+  //       const dotpiList = dotpiCollection.filter(state => state.get('cmdProcess'));
+  //       doSync(dotpiList, localPathname, remotePathname);
+  //     }
+  //   }
+  // });
 }

@@ -40,11 +40,14 @@ export function forkProcess(dotpi) {
       // allow using tilde in fork paths
       const pwd = dotpi.get('forkPwd').replace(/^~/, home);
 
+      console.log(dotpi.getValues());
+
       // kill current process if any
       if (spawnedProcess !== null) {
         try {
-          await terminate(spawnedProcess.pid);
+          const oldProcess = spawnedProcess.pid;
           spawnedProcess = null;
+          await terminate(oldProcess.pid);
         } catch (err) {
           const log = { cmd, pwd, msg:`Cannot terminate process: ${err.message}\n` }
           this.dotpi.set({ stderr: log });
@@ -59,11 +62,12 @@ export function forkProcess(dotpi) {
         // pack messages together
         const stdoutStack = new LogStack('stdout', dotpi, cmd, pwd);
         const stderrStack = new LogStack('stderr', dotpi, cmd, pwd);
+        console.log('spawn', {command, args, pwd});
         // spawn the process in detached mode
         spawnedProcess = spawn(command, args, {
           cwd: pwd,
           uid,
-          shell: '/bin/bash',
+          // shell: '/bin/bash',
           detached: false,
         });
 

@@ -1,11 +1,14 @@
 import os from 'node:os';
 import readline from 'node:readline';
 import { execSync } from 'node:child_process';
+import fs from 'fs';
 
-import getPort from 'get-port';
 import '@soundworks/helpers/polyfills.js';
 import { Client } from '@soundworks/core/client.js';
 import launcher from '@soundworks/helpers/launcher.js';
+import pluginCheckin from '@soundworks/plugin-checkin/client.js';
+import getPort from 'get-port';
+import JSON5 from 'json5';
 
 import { loadConfig } from '../../utils/load-config.js';
 // controllers
@@ -24,6 +27,10 @@ import { DiscoveryClient, BROADCAST_PORT } from '@ircam/node-discovery';
 // - Issue Tracker:         https://github.com/collective-soundworks/soundworks/issues
 // - Wizard & Tools:        `npx soundworks`
 
+const managerVersion = JSON5.parse(fs.readFileSync('package.json')).version;
+const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
+// const soundworksVersion = 'notTheSameVersion';
+
 async function bootstrap() {
   try {
     // ---------------------------------------------------------
@@ -31,16 +38,14 @@ async function bootstrap() {
     // ---------------------------------------------------------
 
     const debug = (process.env.DEBUG === '1') || false;
-    let hostname = os.hostname();
     let port;
+    let hostname = os.hostname();
     let isDebugClient = false;
 
     if (hostname.startsWith('dotpi-')) {
       port = BROADCAST_PORT;
     } else {
       console.log('> DEBUG mode');
-      hostname = `dotpi-debug-client-${parseInt(Math.random() * 1e5)}`;
-      // hostname = 'dotpi-debug-client-coucou';
       port = await getPort();
       isDebugClient = true;
     }
@@ -60,6 +65,25 @@ async function bootstrap() {
       });
 
       discoveryClient.on('connection', async (rinfo, linfo) => {
+        if (rinfo.payload.managerVersion !== managerVersion
+          || rinfo.payload.soundworksVersion !== soundworksVersion
+        ) {
+          console.warn(`
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+WARNING
+
+Version discepancies between manager server and client:
++ manager    - server: ${rinfo.payload.managerVersion} | local: ${managerVersion}
++ soundworks - server: ${rinfo.payload.soundworksVersion} | local: ${soundworksVersion}
+
+You should consider running:
++ \`rm -Rf node_modules && npm install\` on your server machine
++ \`sudo dotpi manager_update\` on your remote devices
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
+        }
+
         resolve([rinfo, linfo]);
       });
 
@@ -79,7 +103,16 @@ async function bootstrap() {
     const client = new Client(config);
     launcher.register(client);
 
+    client.pluginManager.register('checkin', pluginCheckin);
+
     await client.start();
+
+    if (isDebugClient) {
+      const checkin = await client.pluginManager.get('checkin');
+      hostname = `dotpi-debug-client-${checkin.getIndex().toString().padStart(3, '0')}`;
+    }
+
+    console.log(hostname);
 
     const dotpi = await client.stateManager.create('dotpi', {
       address: linfo.address,

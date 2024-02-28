@@ -6,7 +6,8 @@ import { html, render } from 'lit';
 import '@ircam/sc-components/sc-separator.js';
 
 import '../components/sw-audit.js';
-import './views/dotpi-commands.js';
+// import './views/dotpi-commands.js';
+import './views/dotpi-control-panels.js';
 import './views/dotpi-client-list.js';
 import './views/dotpi-log.js';
 
@@ -31,12 +32,17 @@ async function main($container) {
     client, // soundworks client
     global: await client.stateManager.attach('global'),
     dotpiCollection: await client.stateManager.getCollection('dotpi'),
+    controlPanelCollection: await client.stateManager.getCollection('control-panel'),
 
     // local list of client hostnames shown in the logs
     logSelected: new Set(),
     notifications: new Set(),
 
     async init() {
+      // first control panel as default
+      this.controlPanelCollection.sort(p => p.get('id'));
+      this.controlPanel = this.controlPanelCollection.find((p, i) => i === 0);
+
       // Require secure context: This feature is available only in secure contexts (HTTPS),
       // in some or all supporting browsers. => ok in localhost
       // Notifications must be accepted system wide for the browser.
@@ -51,6 +57,31 @@ async function main($container) {
           }
         });
       }
+
+      this.controlPanelCollection.onAttach(panel => {
+        this.controlPanelCollection.sort(p => p.get('id'));
+        this.controlPanel = panel;
+        this.render();
+      });
+
+      this.controlPanelCollection.onDetach(panel => {
+        if (this.controlPanel === panel) {
+          this.controlPanel = null;
+          // find closest previous id
+          const id = panel.get('id');
+          let targetId = -1;
+          for (let controlPanel of this.controlPanelCollection) {
+            const controlPanelId = controlPanel.get('id');
+            if (controlPanelId > targetId && controlPanelId < id) {
+              this.controlPanel = controlPanel;
+            }
+          }
+        }
+
+        this.render();
+      });
+
+      this.controlPanelCollection.onUpdate(() => this.render());
 
       this.dotpiCollection.onAttach(async dotpi => {
         const hostname = dotpi.get('hostname');
@@ -105,9 +136,10 @@ async function main($container) {
         </header>
         <div id="main">
           <div class="col-left">
-            <dotpi-commands .app=${this}></dotpi-commands>
+            <dotpi-control-panels .app=${this}></dotpi-control-panels>
+            <!-- <dotpi-commands .app=${this}></dotpi-commands> -->
             <sc-separator direction="column"></sc-separator>
-            <dotpi-client-list .app=${this}></dotpi-client-list>
+            <!-- <dotpi-client-list .app=${this}></dotpi-client-list> -->
           </div>
           <sc-separator direction="row"></sc-separator>
           <dotpi-log class="col-right" .app=${this}></dotpi-log>

@@ -51,60 +51,60 @@ export default {
     event: true,
   },
 
-  // define if the client should execute the commands
-  cmdProcess: {
-    type: 'boolean',
-    default: true,
-  },
+  // // define if the client should execute the commands
+  // cmdProcess: {
+  //   type: 'boolean',
+  //   default: true,
+  // },
 
-  reboot: {
-    type: 'boolean',
-    event: true,
-  },
-  shutdown: {
-    type: 'boolean',
-    event: true,
-  },
+  // reboot: {
+  //   type: 'boolean',
+  //   event: true,
+  // },
+  // shutdown: {
+  //   type: 'boolean',
+  //   event: true,
+  // },
 
-  // commands
-  execCmd: {
-    type: 'string',
-    default: '',
-  },
-  execPwd: {
-    type: 'string',
-    default: '',
-  },
-  execTrigger: {
-    type: 'boolean',
-    event: true,
-  },
-  // not implemented
-  execKill: {
-    type: 'boolean', // pid
-    event: true,
-  },
-  execProcesses: {
-    type: 'any',
-    default: [],
-  },
+  // // commands
+  // execCmd: {
+  //   type: 'string',
+  //   default: '',
+  // },
+  // execPwd: {
+  //   type: 'string',
+  //   default: '',
+  // },
+  // execTrigger: {
+  //   type: 'boolean',
+  //   event: true,
+  // },
+  // // not implemented
+  // execKill: {
+  //   type: 'boolean', // pid
+  //   event: true,
+  // },
+  // execProcesses: {
+  //   type: 'any',
+  //   default: [],
+  // },
 
-  forkPwd: {
-    type: 'string',
-    default: '',
-  },
-  forkCmd: {
-    type: 'string',
-    default: '',
-  },
-  forkToggle: {
-    type: 'boolean',
-    event: true,
-  },
+  // forkPwd: {
+  //   type: 'string',
+  //   default: '',
+  // },
+  // forkCmd: {
+  //   type: 'string',
+  //   default: '',
+  // },
+  // forkToggle: {
+  //   type: 'boolean',
+  //   event: true,
+  // },
 
-  // for feedback when syncing is in progress
-  syncing: {
-    type: 'boolean',
-    default: false,
-  },
+  // // for feedback when syncing is in progress
+  // syncing: {
+  //   type: 'boolean',
+  //   default: false,
+  // },
 };
