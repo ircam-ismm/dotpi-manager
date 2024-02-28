@@ -3,7 +3,6 @@ export default {
     type: 'integer',
     default: -1,
   },
-
   label: {
     type: 'string',
     default: null,
@@ -17,7 +16,6 @@ export default {
     type: 'string',
     default: '',
   },
-
   remoteDirectory: {
     type: 'string',
     default: '',
@@ -30,12 +28,10 @@ export default {
     type: 'string',
     default: '',
   },
-
   executeCommand: {
     type: 'boolean',
     default: false,
   },
-
   executingCommandList: {
     type: 'any',
     default: [],
@@ -56,12 +52,10 @@ export default {
     type: 'boolean',
     event: true,
   },
-
   syncWatch: {
     type: 'boolean',
     default: false,
   },
-
   syncingList: {
     type: 'any',
     default: [],
@@ -78,16 +72,16 @@ export default {
   // --------------------------------------------------------------------------
   // filter comand and sync, if in list does not sync nor execute commands
   // --------------------------------------------------------------------------
-  filterList: {
+  filteredList: {
     type: 'any',
     default: [],
   },
-  filterListAdd: {
-    type: 'string',
+  filteredListAdd: {
+    type: 'string', // @todo - Array so that we can select / unselected all at once
     event: true,
   },
-  filterListDelete: {
-    type: 'string',
+  filteredListDelete: {
+    type: 'string', // @todo - Array so that we can select / unselected all at once
     event: true,
   },
 

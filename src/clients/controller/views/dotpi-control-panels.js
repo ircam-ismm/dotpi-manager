@@ -43,6 +43,9 @@ class DotPiControlPanels extends LitElement {
 
     sc-icon[type=close] {
       float: right;
+      border: none;
+      background-color: transparent;
+      opacity: 0.8;
     }
 
     sc-text[editable] {

@@ -1,5 +1,8 @@
 # TODOS
 
+- [ ] sync
+- [ ] filter logs
+
 ## Local emulated clients
 - [x] use index from plugin check to create hostname
 

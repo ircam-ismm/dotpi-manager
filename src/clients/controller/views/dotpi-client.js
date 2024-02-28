@@ -96,14 +96,14 @@ class DotPiClient extends LitElement {
   
   render() {
     const { hostname, address } = this.infos;
+    const showLogs = this.app.logSelected.has(hostname);
     const connected = this._state ? true : false;
     const hasInternet = this._state ? this._state.get('hasInternet') : false;
     const testAudio = this._state ? this._state.get('testAudio') : false;
-    const syncing = this._state ? this._state.get('syncing') : false;
-    const executing = this._state ? this._state.get('execProcesses').length > 0 : false;
 
-    const showLogs = this.app.logSelected.has(hostname);
-    const cmdProcess = this._state ? this._state.get('cmdProcess') : false;
+    const syncing = this.app.controlPanel.get('syncingList').indexOf(hostname) !== -1;
+    const executingCommand = this.app.controlPanel.get('executingCommandList').indexOf(hostname) !== -1;
+    const filtered = this.app.controlPanel.get('filteredList').indexOf(hostname) !== -1;
 
     return html`
       <div class="infos">
@@ -131,11 +131,14 @@ class DotPiClient extends LitElement {
         <sc-status ?disabled=${!connected} ?active=${connected}></sc-status>
         <sc-status ?disabled=${!connected} ?active=${hasInternet}></sc-status>
         <sc-status class="syncing" ?disabled=${!connected} ?active=${syncing}></sc-status>
-        <sc-status class="executing" ?disabled=${!connected} ?active=${executing}></sc-status>
+        <sc-status class="executing" ?disabled=${!connected} ?active=${executingCommand}></sc-status>
         <sc-toggle
           ?disabled=${!connected}
-          ?active=${cmdProcess}
-          @change=${e => this._state.set({ cmdProcess: e.detail.value })}
+          ?active=${!filtered}
+          @change=${e => {
+            const command = e.detail.value ? 'filteredListDelete' : 'filteredListAdd';
+            this.app.controlPanel.set({ [command]: hostname })
+          }}
         ></sc-toggle>
         <sc-toggle
           ?active=${showLogs}

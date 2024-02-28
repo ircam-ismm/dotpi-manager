@@ -1,6 +1,6 @@
 import ping from 'ping';
 
-const host = 'google.com';
+const host = '1.1.1.1';
 
 export function probeInternet(dotpi, intervalInSec = 10) {
   (async function probe() {

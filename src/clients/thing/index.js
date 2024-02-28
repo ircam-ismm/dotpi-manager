@@ -13,10 +13,10 @@ import JSON5 from 'json5';
 import { loadConfig } from '../../utils/load-config.js';
 // controllers
 import { probeInternet } from './controllers/probe-internet.js';
-import { execCommand } from './controllers/exec-command.js';
-import { forkProcess } from './controllers/fork-process.js';
-import { shutdown } from './controllers/shutdown.js';
+// import { executeCommands } from './controllers/exec-command.js';
+import { executeCommands } from './controllers/execute-commands.js';
 import { testAudio } from './controllers/test-audio.js';
+import { rebootAndShutdown } from './controllers/reboot-and-shutdown.js';
 // testing
 import { testPushLogs } from './testing/test-push-logs.js';
 
@@ -112,7 +112,7 @@ You should consider running:
       hostname = `dotpi-debug-client-${checkin.getIndex().toString().padStart(3, '0')}`;
     }
 
-    console.log(hostname);
+    const global = await client.stateManager.attach('global');
 
     const dotpi = await client.stateManager.create('dotpi', {
       address: linfo.address,
@@ -124,12 +124,14 @@ You should consider running:
       isDebugClient,
     });
 
+    const controlPanelCollection = await client.stateManager.getCollection('control-panel');
+
     probeInternet(dotpi, 10);
-    execCommand(dotpi);
-    forkProcess(dotpi);
-    shutdown(dotpi);
     testAudio(dotpi);
 
+    executeCommands(controlPanelCollection, dotpi);
+
+    rebootAndShutdown(global);
     // testing
     // testPushLogs(dotpi);
   } catch(err) {

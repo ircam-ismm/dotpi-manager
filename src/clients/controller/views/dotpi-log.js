@@ -73,6 +73,7 @@ class DotPiLog extends LitElement {
       display: block;
       width: 100%;
       height: calc(100% - var(--sw-header-height));
+      /* issue with icons from client list */
     }
 
     header {
@@ -174,21 +175,16 @@ class DotPiLog extends LitElement {
       <header>
         <H3>Logs</H3>
         <div>
-          <sc-icon
-            type="close"
-            title="clear all logs"
-            @input=${e => this._clearStack()}
-          >clear</sc-icon>
-          <sc-status
-            title="has errors"
-            ?active=${!this._hasNewErrors}
-            @click=${e => this._hasNewErrors = false}
-          ></sc-status>
           <sc-button
             title="filter errors"
             .selected=${this._showOnly === 'stderr'}
             @input=${e => this._toggleShowOnly('stderr')}
           >stderr (${this.stack.numErr})</sc-button>
+          <sc-icon
+            type="close"
+            title="clear all logs"
+            @input=${e => this._clearStack()}
+          >clear</sc-icon>
         </div>
       </header>
       <section class="logs">
@@ -198,7 +194,7 @@ class DotPiLog extends LitElement {
               <header
                 @dblclick=${() => this._selectLogsFromHostname(log.hostname)}
               >
-                <sc-text>[${log.date.toLocaleString()}] ${log.hostname}</sc-text>
+                <sc-text>[${log.date.toLocaleString()}] ${log.hostname} (${log.panelLabel})</sc-text>
                 <sc-text style="text-align: right;">cmd: ${log.cmd} | pwd: ${log.pwd}</sc-text>
               </header>
               <sc-code-example language="text">${log.msg}</sc-code-example>

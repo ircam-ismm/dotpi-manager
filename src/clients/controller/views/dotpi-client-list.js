@@ -22,6 +22,8 @@ class DotPiClientList extends LitElement {
       width: 100%;
       height: 100%;
       padding: 12px;
+      background-color: var(--sc-color-primary-1);
+      z-index: 1000;
 
       --dotpi-icons-width: 240px;
       --dotpi-client-list-header-height: 26px;
@@ -135,10 +137,11 @@ class DotPiClientList extends LitElement {
             type="prompt"
             title="filter actions"
             @click=${async e => {
-              this._allExecSelected = !this._allExecSelected;
-              // manipulate the dotpiCollection directly (not perfect but it works)
-              this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
-              this.requestUpdate();
+              console.log('@todo - fixme');
+              // this._allExecSelected = !this._allExecSelected;
+              // // manipulate the dotpiCollection directly (not perfect but it works)
+              // this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
+              // this.requestUpdate();
             }}
           ></sc-icon>
           <sc-icon
@@ -161,7 +164,6 @@ class DotPiClientList extends LitElement {
             type="speaker"
             title="execute"
             @click=${e => {
-              // manipulate the dotpiCollection directly (not perfect but it works)
               this.app.dotpiCollection.set({ testAudio: true });
               this.requestUpdate();
             }}

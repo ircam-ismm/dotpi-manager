@@ -16,8 +16,8 @@ import dotpiSchema from './schemas/dotpi.js';
 import globalSchema from './schemas/global.js';
 import controlPanelSchema from './schemas/control-panel.js';
 // controllers
+// import { forwardCommands } from './controllers/forward-commands.js';
 import { syncDirectory } from './controllers/sync-directory.js';
-import { forwardCommands } from './controllers/forward-commands.js';
 import { logger } from './controllers/logger.js';
 
 // - General documentation: https://soundworks.dev/
@@ -66,6 +66,59 @@ const dotpiCollection = await server.stateManager.getCollection('dotpi');
 let controlPanelId = -1;
 const controlPanels = new Map();
 
+server.stateManager.registerUpdateHook('control-panel', (updates, currentValues) => {
+  for (let [name, value] of Object.entries(updates)) {
+    switch (name) {
+      case 'filteredListAdd': {
+        const { filteredList } = currentValues;
+        filteredList.push(value);
+        return { filteredList };
+        break;
+      }
+      case 'filteredListDelete': {
+        const { filteredList } = currentValues;
+        const index = filteredList.indexOf(value);
+        if (index !== -1) {
+          filteredList.splice(index, 1);
+        }
+        return { filteredList };
+        break;
+      }
+      case 'syncingListAdd': {
+        const { syncingList } = currentValues;
+        syncingList.push(value);
+        return { syncingList };
+        break;
+      }
+      case 'syncingListDelete': {
+        const { syncingList } = currentValues;
+        const index = syncingList.indexOf(value);
+        if (index !== -1) {
+          syncingList.splice(index, 1);
+        }
+        return { syncingList };
+        break;
+      }
+      case 'executingCommandListAdd': {
+        const { executingCommandList } = currentValues;
+        executingCommandList.push(value);
+        return { executingCommandList };
+        break;
+      }
+      case 'executingCommandListDelete': {
+        const { executingCommandList } = currentValues;
+        const index = executingCommandList.indexOf(value);
+        if (index !== -1) {
+          executingCommandList.splice(index, 1);
+        }
+        const executeCommand = executingCommandList.length > 0 ? true : false;
+        return { executingCommandList, executeCommand };
+        break;
+      }
+    }
+  }
+});
+
 async function createControlPanel(values = null) {
   let controlPanel;
 
@@ -80,8 +133,9 @@ async function createControlPanel(values = null) {
     controlPanel = await server.stateManager.create('control-panel', values);
   }
 
-  controlPanel.onUpdate(() => persistControlPanels());
+  controlPanel.onUpdate(updates => persistControlPanels());
   controlPanels.set(controlPanelId, controlPanel);
+
   persistControlPanels();
 }
 
@@ -89,11 +143,11 @@ async function deleteControlPanel(id) {
   const controlPanel = controlPanels.get(id);
   await controlPanel.delete();
   controlPanels.delete(id);
+
   persistControlPanels();
 }
 
 async function persistControlPanels() {
-  // @todo - filter fields that are stored
   const values = Array.from(controlPanels.values()).map(panel => {
     return {
       id: panel.get('id'),
@@ -103,10 +157,10 @@ async function persistControlPanels() {
       command: panel.get('command'),
     }
   });
+
   fs.writeFileSync(dbPathname, JSON5.stringify(values, null, 2));
 }
 
-// store current command infos into file (could be an interesting preset pattern...)
 global.onUpdate(async updates => {
   for (let [key, value] of Object.entries(updates)) {
     switch (key) {
@@ -133,14 +187,13 @@ global.onUpdate(async updates => {
   }
 });
 
-// try read stored values
+// init control panels from persited values
 if (fs.existsSync(dbPathname)) {
   const db = JSON5.parse(fs.readFileSync(dbPathname));
   for (let entry of db) {
     await createControlPanel(entry);
   }
 }
-
 // if empty, init with one panel
 if (controlPanels.size === 0) {
   await createControlPanel();
@@ -160,7 +213,7 @@ dotpiCollection.onAttach(dotpi => {
 });
 
 // register controllers
-forwardCommands(global, dotpiCollection);
+// forwardCommands(global, dotpiCollection);
 syncDirectory(global, dotpiCollection);
 logger(server, global, dotpiCollection);
 

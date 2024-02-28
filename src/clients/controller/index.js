@@ -66,7 +66,8 @@ async function main($container) {
 
       this.controlPanelCollection.onDetach(panel => {
         if (this.controlPanel === panel) {
-          this.controlPanel = null;
+          this.controlPanelCollection.sort(p => p.get('id'))
+          this.controlPanel = this.controlPanelCollection.find((p, i) => i === 0);
           // find closest previous id
           const id = panel.get('id');
           let targetId = -1;
@@ -117,7 +118,7 @@ async function main($container) {
             <sc-icon
               type="redo"
               @click=${e => {
-                const result = confirm('Are you sure you want to reboot the selected dotpi clients?');
+                const result = confirm('Are you sure you want to reboot all dotpi clients?');
                 if (result) {
                   this.global.set({ reboot: true });
                 }
@@ -126,7 +127,7 @@ async function main($container) {
             <sc-icon
               type="shutdown"
               @click=${e => {
-                const result = confirm('Are you sure you want to shutdown the selected dotpi clients?');
+                const result = confirm('Are you sure you want to shutdown all dotpi clients?');
                 if (result) {
                   this.global.set({ shutdown: true });
                 }
@@ -137,9 +138,8 @@ async function main($container) {
         <div id="main">
           <div class="col-left">
             <dotpi-control-panels .app=${this}></dotpi-control-panels>
-            <!-- <dotpi-commands .app=${this}></dotpi-commands> -->
             <sc-separator direction="column"></sc-separator>
-            <!-- <dotpi-client-list .app=${this}></dotpi-client-list> -->
+            <dotpi-client-list .app=${this}></dotpi-client-list>
           </div>
           <sc-separator direction="row"></sc-separator>
           <dotpi-log class="col-right" .app=${this}></dotpi-log>
