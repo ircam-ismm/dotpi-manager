@@ -59,13 +59,14 @@ class DotPiLog extends LitElement {
       hasChanged: () => true,
     },
     _showOnly: {
-      type: Boolean,
       state: true,
     },
     _hasNewErrors: {
-      type: Boolean,
       state: true,
     },
+    _logFilterRegExp: {
+      state: true,
+    }
   };
 
   static styles = css`
@@ -73,7 +74,7 @@ class DotPiLog extends LitElement {
       display: block;
       width: 100%;
       height: calc(100% - var(--sw-header-height));
-      /* issue with icons from client list */
+      /* @fixme: issue with icons from client list, they appear on top of logs */
     }
 
     header {
@@ -101,6 +102,8 @@ class DotPiLog extends LitElement {
       background-color: var(--sc-color-primary-3);
       overflow-y: auto;
       height: calc(100% - 34px);
+      display: flex;
+      flex-direction: column-reverse;
     }
 
     .log {
@@ -156,12 +159,13 @@ class DotPiLog extends LitElement {
 
     this._showOnly = null;
     this._hasNewErrors = false;
+    this._logFilterRegExp = '';
 
     this.stack = new LogStack();
   }
 
   render() {
-    const filtered = this.stack.values
+    let filtered = this.stack.values
       .filter(log => {
         if (this._showOnly !== null) {
           return log.type === this._showOnly;
@@ -171,10 +175,21 @@ class DotPiLog extends LitElement {
       })
       .filter(log => this.app.logSelected.has(log.hostname));
 
+    if (this._logFilterRegExp !== '') {
+      const re = new RegExp(this._logFilterRegExp);
+      filtered = filtered.filter(log => {
+        return re.test(JSON.stringify(log));
+      });
+    }
+
     return html`
       <header>
         <H3>Logs</H3>
         <div>
+          <sc-text
+            editable
+            @change=${e => this._logFilterRegExp = e.detail.value.trim()}
+          ></sc-text>
           <sc-button
             title="filter errors"
             .selected=${this._showOnly === 'stderr'}

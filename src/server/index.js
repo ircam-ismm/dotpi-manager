@@ -16,8 +16,7 @@ import dotpiSchema from './schemas/dotpi.js';
 import globalSchema from './schemas/global.js';
 import controlPanelSchema from './schemas/control-panel.js';
 // controllers
-// import { forwardCommands } from './controllers/forward-commands.js';
-import { syncDirectory } from './controllers/sync-directory.js';
+import { rsync } from './controllers/rsync.js';
 import { logger } from './controllers/logger.js';
 
 // - General documentation: https://soundworks.dev/
@@ -59,9 +58,10 @@ server.stateManager.registerSchema('control-panel', controlPanelSchema);
 
 await server.start();
 
-// @todo - remove global default from there
 const global = await server.stateManager.create('global');
 const dotpiCollection = await server.stateManager.getCollection('dotpi');
+// control panel collection for usage in sync directory controller
+const controlPanelCollection = await server.stateManager.getCollection('control-panel');
 
 let controlPanelId = -1;
 const controlPanels = new Map();
@@ -158,8 +158,8 @@ async function persistControlPanels() {
     return {
       id: panel.get('id'),
       label: panel.get('label'),
-      localDirectory: panel.get('localDirectory'),
-      remoteDirectory: panel.get('remoteDirectory'),
+      localPath: panel.get('localPath'),
+      remotePath: panel.get('remotePath'),
       command: panel.get('command'),
     }
   });
@@ -219,9 +219,8 @@ dotpiCollection.onAttach(dotpi => {
 });
 
 // register controllers
-// forwardCommands(global, dotpiCollection);
-syncDirectory(global, dotpiCollection);
-logger(server, global, dotpiCollection);
+rsync(controlPanelCollection, dotpiCollection);
+logger(server, dotpiCollection);
 
 // run the discovery server
 const discoveryServer = new DiscoveryServer({

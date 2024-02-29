@@ -1,26 +1,31 @@
 # TODOS
 
+## Chore
+- [x] implement control panels
 - [x] fix filter list select/unselect all
-- [ ] sync
-- [ ] filter logs
+- [x] logs in right order: newer on bottom
+- [x] filter logs
+- [x] sync
 - [ ] feedback in controller if discrepancies with versions
+- [ ] report errors from server (e.g. rsync) into controller
 
-## Local emulated clients
-- [x] use index from plugin check to create hostname
-
-## Control panels
+## GUI / Usability Improvements
 - [ ] store screen position into local storage
       cf. implement in sc-components
 - [ ] use id as opposed to label in sc-tab controller 
       cf. https://github.com/ircam-ismm/sc-components/issues/40
 - [ ] fix text input to prevent new lines
       cf. https://github.com/ircam-ismm/sc-components/issues/36
-
-## clients list
+- [ ] add placeholder for filter / update on @input
+      cf. https://github.com/ircam-ismm/sc-components/issues/36
 - [ ] highlight icons when one in list is active, mainly for execute, sync)
       cf. https://github.com/ircam-ismm/sc-components/issues/29
-      
+
+## Emulated clients
+- [x] use index from plugin check to create hostname
+
 ## Audio
+- [x] do not crash is audioContext fails to start
 - [x] white noise
 - [x] sweep
 - [ ] general volume button

@@ -12,11 +12,11 @@ export default {
   // --------------------------------------------------------------------------
   // related local and remote directories
   // --------------------------------------------------------------------------
-  localDirectory: {
+  localPath: {
     type: 'string',
     default: '',
   },
-  remoteDirectory: {
+  remotePath: {
     type: 'string',
     default: '',
   },

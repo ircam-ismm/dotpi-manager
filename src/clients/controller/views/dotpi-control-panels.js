@@ -101,19 +101,19 @@ class DotPiControlPanels extends LitElement {
           <div>
             <h3>Directories</h3>
             <div>
-              <sc-text>Remote directory</sc-text>
+              <sc-text>Remote path</sc-text>
               <sc-text
-                value=${this.app.controlPanel.get('remoteDirectory')}
+                value=${this.app.controlPanel.get('remotePath')}
                 editable
-                @change=${e => this.app.controlPanel.set({ remoteDirectory: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+                @change=${e => this.app.controlPanel.set({ remotePath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
               ></sc-text>
             </div>
             <div>
-              <sc-text>Local directory</sc-text>
+              <sc-text>Local path</sc-text>
               <sc-text
-                value=${this.app.controlPanel.get('localDirectory')}
+                value=${this.app.controlPanel.get('localPath')}
                 editable
-                @change=${e => this.app.controlPanel.set({ localDirectory: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+                @change=${e => this.app.controlPanel.set({ localPath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
               ></sc-text>
             </div>
           </div>

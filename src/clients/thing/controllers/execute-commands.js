@@ -44,7 +44,7 @@ export function executeCommands(controlPanelCollection, dotpi) {
       cmd = `npm install --loglevel info 2>&1`;
     }
 
-    const pwd = controlPanel.get('remoteDirectory').replace(/^~/, home);
+    const pwd = controlPanel.get('remotePath').replace(/^~/, home);
 
     if ('executeCommand' in updates) {
       const { executeCommand } = updates;

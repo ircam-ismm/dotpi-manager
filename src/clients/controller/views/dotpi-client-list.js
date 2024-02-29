@@ -12,7 +12,7 @@ class DotPiClientList extends LitElement {
       state: true,
       hasChanged: () => true,
     },
-    _hostnameFilter: {
+    _hostnameFilterRegExp: {
       state: true,
     },
   };
@@ -104,13 +104,13 @@ class DotPiClientList extends LitElement {
   constructor() {
     super();
 
-    this._hostnameFilter = '';
+    this._hostnameFilterRegExp = '';
     this._logAllClients = true;
     this._filterAllClients = false;
   }
 
   render() {
-    const re = new RegExp(this._hostnameFilter);
+    const re = new RegExp(this._hostnameFilterRegExp);
     const dotpiList = this.app.global.get('dotpiSeen')
       .sort((a, b) => a.hostname < b.hostname ? -1 : 1) // sort by alphabetical order
       .sort(infos => { // move disconnected clients on top
@@ -122,21 +122,21 @@ class DotPiClientList extends LitElement {
     return html`
       <header>
         <h3>dotpi clients</h3>
-        <sc-radio
-          options=${JSON.stringify(['noise', 'sweep'])}
-          orientation="horizontal"
-          value=${this.app.global.get('testAudioSource')}
-          @change=${e => this.app.global.set({ testAudioSource: e.detail.value })}
-        ></sc-radio>
-      </header>
-      <div class="list-header">
-        <div class="col-right">
-          <sc-text class="filter">filter:</sc-text>
+        <div>
           <sc-text
             editable
-            @change=${e => this._hostnameFilter = e.detail.value}
+            @change=${e => this._hostnameFilterRegExp = e.detail.value}
           ></sc-text>
+          <sc-radio
+            options=${JSON.stringify(['noise', 'sweep'])}
+            orientation="horizontal"
+            value=${this.app.global.get('testAudioSource')}
+            @change=${e => this.app.global.set({ testAudioSource: e.detail.value })}
+          ></sc-radio>
         </div>
+      </header>
+      <div class="list-header">
+        <div class="col-right"></div>
         <div class="icons">
           <sc-icon disabled type="network" title="connected"></sc-icon>
           <sc-icon disabled type="internet" title="internet"></sc-icon>

@@ -16,7 +16,7 @@ function formatLog(log) {
 ${log.msg}`;
 }
 
-export async function logger(server, global, dotpiCollection) {
+export async function logger(server, dotpiCollection) {
   const today = new Date();
   const filename = `${today.getUTCFullYear()}-${padLeft(today.getUTCMonth() + 1)}-${padLeft(today.getUTCDate())}.txt`;
   const logger = await server.pluginManager.get('logger');
