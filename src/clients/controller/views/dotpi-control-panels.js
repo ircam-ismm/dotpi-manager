@@ -96,7 +96,21 @@ class DotPiControlPanels extends LitElement {
               class="label"
               value=${this.app.controlPanel.get('label')}
               editable
-              @change=${e => this.app.controlPanel.set({ label: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+              @change=${e => {
+                const originalLabel = this.app.controlPanel.get('label');
+                const labels = this.app.controlPanelCollection.get('label');
+                labels.splice(labels.indexOf(originalLabel), 1);
+                let label = e.detail.value.replace(/(\r\n|\n|\r)/gm, '');
+                const prefix = label;
+                let number = 1;
+
+                while (labels.indexOf(label) !== -1) {
+                  label = `${prefix} (${number})`;
+                  number += 1;
+                }
+
+                this.app.controlPanel.set({ label });
+              }}
             ></sc-text>
             <sc-text class="info">(panel id: ${this.app.controlPanel.get('id')})</sc-text>
             <sc-icon
