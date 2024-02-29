@@ -11,7 +11,7 @@
   --sw-header-height: 32px;
 
   /** app specific **/
-  --dotpi-command-height: 460px;
+  --dotpi-command-height: 400px;
 }
 
 html, body {
@@ -56,10 +56,9 @@ body.loading {
     display: flex;
   }
 
-  sc-icon {
+  sc-icon, sc-fullscreen {
     height: var(--sw-header-height);
     width: var(--sw-header-height);
-    // border: none;
   }
 
   sc-icon[type=redo] {
@@ -77,20 +76,16 @@ body.loading {
   height: calc(100vh - var(--sw-header-height));
 
   .col-left {
-    width: 90%;
+    width: max(800px, 60%);
     height: 100%;
     display: flex;
     flex-direction: column;
 
     dotpi-commands {
-      height: var(--dotpi-command-height);
-      min-width: 700px;
       overflow: auto;
     }
 
-    dotpi-client-list {
-      height: calc(100% - var(--dotpi-command-height));
-    }
+    dotpi-client-list {}
   }
 }
 
@@ -134,7 +129,7 @@ body.loading {
 
 dotpi-log {
   position: relative;
-  z-index: 3;
+  z-index: 2000;
   width: 50%;
   height: calc(100vh - var(--sw-header-height));
 }

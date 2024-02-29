@@ -39,6 +39,10 @@ class DotPiControlPanels extends LitElement {
       margin-bottom: 4px;
     }
 
+    div.panel-infos {
+      margin-bottom: 20px;
+    }
+
     sc-icon[type=close] {
       float: right;
       border: none;
@@ -87,19 +91,21 @@ class DotPiControlPanels extends LitElement {
       </header>
       <div>
         ${this.app.controlPanel ? html`
-          <sc-text
-            class="label"
-            value=${this.app.controlPanel.get('label')}
-            editable
-            @change=${e => this.app.controlPanel.set({ label: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
-          ></sc-text>
-          <sc-text class="info">(panel id: ${this.app.controlPanel.get('id')})</sc-text>
-          <sc-icon
-            type="close"
-            @input=${e => this.app.global.set({ deleteControlPanel: this.app.controlPanel.get('id') })}
-          ></sc-icon>
+          <div class="panel-infos">
+            <sc-text
+              class="label"
+              value=${this.app.controlPanel.get('label')}
+              editable
+              @change=${e => this.app.controlPanel.set({ label: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+            ></sc-text>
+            <sc-text class="info">(panel id: ${this.app.controlPanel.get('id')})</sc-text>
+            <sc-icon
+              type="close"
+              @input=${e => this.app.global.set({ deleteControlPanel: this.app.controlPanel.get('id') })}
+            ></sc-icon>
+          </div>
           <div>
-            <h3>Directories</h3>
+            <!-- <h3>dotpi clients</h3> -->
             <div>
               <sc-text>Remote path</sc-text>
               <sc-text
@@ -108,17 +114,6 @@ class DotPiControlPanels extends LitElement {
                 @change=${e => this.app.controlPanel.set({ remotePath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
               ></sc-text>
             </div>
-            <div>
-              <sc-text>Local path</sc-text>
-              <sc-text
-                value=${this.app.controlPanel.get('localPath')}
-                editable
-                @change=${e => this.app.controlPanel.set({ localPath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
-              ></sc-text>
-            </div>
-          </div>
-          <div>
-            <h3>Command</h3>
             <div>
               <sc-text>/bin/bash</sc-text>
               <sc-text
@@ -141,12 +136,18 @@ class DotPiControlPanels extends LitElement {
           <div>
             <h3>Synchronize</h3>
             <div>
+              <sc-text>Local path</sc-text>
+              <sc-text
+                value=${this.app.controlPanel.get('localPath')}
+                editable
+                @change=${e => this.app.controlPanel.set({ localPath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+              ></sc-text>
+            </div>
+            <div>
               <sc-text class="align-right">Sync</sc-text>
               <sc-bang
                 @input=${e => this.app.controlPanel.set({ syncTrigger: true })}
               ></sc-bang>
-            </div>
-            <div>
               <sc-text class="align-right">Watch</sc-text>
               <sc-toggle
                 ?active=${this.app.controlPanel.get('syncWatch')}

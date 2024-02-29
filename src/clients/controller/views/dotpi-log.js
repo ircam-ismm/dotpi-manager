@@ -102,6 +102,11 @@ class DotPiLog extends LitElement {
 
     header sc-button {
       --sc-button-background-color-selected: var(--sc-color-secondary-1);
+      width: 120px;
+    }
+
+    header sc-text {
+      width: 120px;
     }
 
     .logs {
@@ -216,7 +221,7 @@ class DotPiLog extends LitElement {
                 @dblclick=${() => this._selectLogsFromHostname(log.hostname)}
               >
                 <sc-text>[${log.date.toLocaleString()}][${log.source}] ${log.hostname}</sc-text>
-                ${log.cmd && log.cwd
+                ${log.cmd && log.pwd
                   ? html`<sc-text style="text-align: right;">cmd: ${log.cmd} | pwd: ${log.pwd}</sc-text>`
                   : html`<sc-text style="text-align: right;"></sc-text>`
                 }

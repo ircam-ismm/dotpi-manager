@@ -105,7 +105,9 @@ export function executeCommands(controlPanelCollection, dotpi) {
         spawned.stderr.on('data', data => stderrStack.push(data.toString()));
         spawned.on('error', err => stderrStack.push(`${err.message}`));
         spawned.on('close', code => {
-          stdoutStack.push(`Child process exited (code ${code})\n`);
+          if (code !== 0) {
+            stdoutStack.push(`Child process exited with code ${code}\n`);
+          }
 
           spawnedProcesses.delete(panelId);
           controlPanel.set({ executingCommandListDelete: hostname });

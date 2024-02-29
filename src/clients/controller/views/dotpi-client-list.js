@@ -45,6 +45,10 @@ class DotPiClientList extends LitElement {
       font-size: 12px;
     }
 
+    header sc-text {
+      width: 120px;
+    }
+
     .list-header {
       width: 100%;
       height: 30px;

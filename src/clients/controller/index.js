@@ -4,6 +4,8 @@ import launcher from '@soundworks/helpers/launcher.js';
 
 import { html, render } from 'lit';
 import '@ircam/sc-components/sc-separator.js';
+import '@ircam/sc-components/sc-icon.js';
+import '@ircam/sc-components/sc-fullscreen.js';
 
 import '../components/sw-audit.js';
 // import './views/dotpi-commands.js';
@@ -115,6 +117,7 @@ async function main($container) {
 
           <div class="col-left">
             <sw-audit .client="${client}"></sw-audit>
+            <sc-fullscreen></sc-fullscreen>
             <sc-icon
               type="redo"
               @click=${e => {
