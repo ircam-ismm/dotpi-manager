@@ -71,16 +71,22 @@ server.stateManager.registerUpdateHook('control-panel', (updates, currentValues)
     switch (name) {
       case 'filteredListAdd': {
         const { filteredList } = currentValues;
-        filteredList.push(value);
+        value.forEach(hostname => {
+          if (filteredList.indexOf(hostname) === -1) {
+            filteredList.push(hostname);
+          }
+        });
         return { filteredList };
         break;
       }
       case 'filteredListDelete': {
         const { filteredList } = currentValues;
-        const index = filteredList.indexOf(value);
-        if (index !== -1) {
-          filteredList.splice(index, 1);
-        }
+        value.forEach(hostname => {
+          const index = filteredList.indexOf(hostname);
+          if (index !== -1) {
+            filteredList.splice(index, 1);
+          }
+        });
         return { filteredList };
         break;
       }

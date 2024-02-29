@@ -208,32 +208,6 @@ class DotPiLog extends LitElement {
   firstUpdated() {
     super.firstUpdated();
 
-    // ------ start debug
-    // warning: this break real behavior
-    // this.app.logSelected.add("dotpi-debug-client-87072");
-    // this.app.logSelected.add("dotpi-debug-client-23");
-
-    // this.stack.insert({
-    //   cmd: "mysupercommand -xrvs",
-    //   pwd: "/home/pi/apps/test",
-    //   date: new Date(),
-    //   hostname: "dotpi-debug-client-87072",
-    //   msg: "\nmy super command output log from dotpi-debug-client-87072 with index 13",
-    //   type: "stdout",
-    // });
-
-    // this.stack.insert({
-    //   cmd: "mysupercommand -xrvs",
-    //   pwd: "/home/pi/apps/test",
-    //   date: new Date(),
-    //   hostname: "dotpi-debug-client-23",
-    //   msg: "\nmy super command output log \nfrom dotpi-debug-client-87072 with index 13",
-    //   type: "stderr",
-    // });
-
-    // this.requestUpdate();
-    // ------ end debug
-
     this.app.dotpiCollection.onUpdate((rpi, updates) => {
       const hostname = rpi.get('hostname');
 

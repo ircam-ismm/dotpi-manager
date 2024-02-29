@@ -1,8 +1,9 @@
 # TODOS
 
-- [ ] fix select/unselect rpi logs
+- [x] fix filter list select/unselect all
 - [ ] sync
 - [ ] filter logs
+- [ ] feedback in controller if discrepancies with versions
 
 ## Local emulated clients
 - [x] use index from plugin check to create hostname
@@ -21,6 +22,6 @@
       
 ## Audio
 - [x] white noise
-- [ ] sweep
+- [x] sweep
 - [ ] general volume button
 

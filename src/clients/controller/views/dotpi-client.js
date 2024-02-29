@@ -137,7 +137,7 @@ class DotPiClient extends LitElement {
           ?active=${!filtered}
           @change=${e => {
             const command = e.detail.value ? 'filteredListDelete' : 'filteredListAdd';
-            this.app.controlPanel.set({ [command]: hostname })
+            this.app.controlPanel.set({ [command]: [hostname] })
           }}
         ></sc-toggle>
         <sc-toggle

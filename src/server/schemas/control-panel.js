@@ -77,11 +77,11 @@ export default {
     default: [],
   },
   filteredListAdd: {
-    type: 'string', // @todo - Array so that we can select / unselected all at once
+    type: 'any', // Array of hostnames to add to the list
     event: true,
   },
   filteredListDelete: {
-    type: 'string', // @todo - Array so that we can select / unselected all at once
+    type: 'any', // Array of hostnames to remove from the list
     event: true,
   },
 

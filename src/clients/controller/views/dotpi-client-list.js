@@ -105,8 +105,8 @@ class DotPiClientList extends LitElement {
     super();
 
     this._hostnameFilter = '';
-    this._allLogSelected = true;
-    this._allExecSelected = true;
+    this._logAllClients = true;
+    this._filterAllClients = false;
   }
 
   render() {
@@ -146,20 +146,19 @@ class DotPiClientList extends LitElement {
             type="prompt"
             title="filter actions"
             @click=${async e => {
-              console.log('@todo - fixme');
-              // this._allExecSelected = !this._allExecSelected;
-              // // manipulate the dotpiCollection directly (not perfect but it works)
-              // this.app.dotpiCollection.set({ cmdProcess: this._allExecSelected });
-              // this.requestUpdate();
+              this._filterAllClients = !this._filterAllClients;
+              const hostnames = this.app.dotpiCollection.get('hostname');
+              const command = this._filterAllClients ? 'filteredListAdd' : 'filteredListDelete';
+              this.app.controlPanel.set({ [command]: hostnames });
             }}
           ></sc-icon>
           <sc-icon
             type="burger"
             title="filter logs"
             @click=${e => {
-              this._allLogSelected = !this._allLogSelected;
+              this._logAllClients = !this._logAllClients;
 
-              if (this._allLogSelected) {
+              if (this._logAllClients) {
                 const dotpiSeen = this.app.global.get('dotpiSeen');
                 dotpiSeen.forEach(infos => this.app.logSelected.add(infos.hostname));
               } else {
@@ -172,10 +171,7 @@ class DotPiClientList extends LitElement {
           <sc-icon
             type="speaker"
             title="execute"
-            @click=${e => {
-              this.app.dotpiCollection.set({ testAudio: true });
-              this.requestUpdate();
-            }}
+            @click=${e => this.app.dotpiCollection.set({ testAudio: true })}
           ></sc-icon>
         </div>
       </div>

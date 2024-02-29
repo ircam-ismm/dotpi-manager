@@ -22,9 +22,7 @@ class DotPiControlPanels extends LitElement {
     }
 
     header {
-      /*padding-bottom: 10px;
-      border-bottom: 1px solid var(--sc-color-primary-4);*/
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     header sc-tab {
@@ -52,6 +50,12 @@ class DotPiControlPanels extends LitElement {
       width: 450px;
     }
 
+    sc-text.label {
+      width: 200px;
+      background-color: var(--sc-color-primary-1);
+      border-color: var(--sc-color-primary-3);
+    }
+
     .align-right {
       text-align: right;
     }
@@ -73,6 +77,8 @@ class DotPiControlPanels extends LitElement {
             if (e.detail.value === '+') {
               this.app.global.set({ createControlPanel: true });
             } else {
+              // @fixme: should use panel id,
+              // cf. https://github.com/ircam-ismm/sc-components/issues/40
               this.app.controlPanel = this.app.controlPanelCollection.find(p => p.get('label') === e.detail.value);
               this.app.render();
             }
@@ -82,11 +88,12 @@ class DotPiControlPanels extends LitElement {
       <div>
         ${this.app.controlPanel ? html`
           <sc-text
+            class="label"
             value=${this.app.controlPanel.get('label')}
             editable
             @change=${e => this.app.controlPanel.set({ label: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
           ></sc-text>
-          <sc-text class="info">(id: ${this.app.controlPanel.get('id')})</sc-text>
+          <sc-text class="info">(panel id: ${this.app.controlPanel.get('id')})</sc-text>
           <sc-icon
             type="close"
             @input=${e => this.app.global.set({ deleteControlPanel: this.app.controlPanel.get('id') })}
