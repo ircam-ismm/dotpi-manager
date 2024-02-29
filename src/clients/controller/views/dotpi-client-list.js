@@ -3,6 +3,8 @@ import { repeat } from 'lit/directives/repeat.js';
 
 import './dotpi-client.js';
 import '@ircam/sc-components/sc-icon.js';
+import '@ircam/sc-components/sc-radio.js';
+import '@ircam/sc-components/sc-text.js';
 
 class DotPiClientList extends LitElement {
   static properties = {
@@ -40,6 +42,7 @@ class DotPiClientList extends LitElement {
       margin: 0;
       height: var(--dotpi-client-list-header-height);
       line-height: var(--dotpi-client-list-header-height);
+      font-size: 12px;
     }
 
     .list-header {
@@ -118,7 +121,13 @@ class DotPiClientList extends LitElement {
 
     return html`
       <header>
-        <h3>clients</h3>
+        <h3>dotpi clients</h3>
+        <sc-radio
+          options=${JSON.stringify(['noise', 'sweep'])}
+          orientation="horizontal"
+          value=${this.app.global.get('testAudioSource')}
+          @change=${e => this.app.global.set({ testAudioSource: e.detail.value })}
+        ></sc-radio>
       </header>
       <div class="list-header">
         <div class="col-right">

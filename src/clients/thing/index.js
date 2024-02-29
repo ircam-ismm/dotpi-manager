@@ -127,7 +127,7 @@ You should consider running:
     const controlPanelCollection = await client.stateManager.getCollection('control-panel');
 
     probeInternet(dotpi, 10);
-    testAudio(dotpi);
+    testAudio(global, dotpi);
 
     executeCommands(controlPanelCollection, dotpi);
 

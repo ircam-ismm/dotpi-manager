@@ -28,4 +28,9 @@ export default {
     type: 'boolean',
     event: true,
   },
+
+  testAudioSource: {
+    type: 'string',
+    default: 'noise',
+  },
 };

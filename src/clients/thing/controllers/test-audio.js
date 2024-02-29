@@ -1,24 +1,43 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { AudioContext } from 'node-web-audio-api';
 
-const audioContext = new AudioContext();
+let audioContext = null;
+let audioContextError = null;
 
-const duration = 0.1;
-const length = Math.ceil(duration * audioContext.sampleRate);
-const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
-
-const noise = new Float32Array(length);
-// maybe we want the same buffer everywhere
-for (let i = 0; i < length; i++) {
-  noise[i] = Math.random() * 2 - 1;
+try {
+  audioContext = new AudioContext();
+} catch (err) {
+  audioContextError = err;
 }
 
-buffer.copyToChannel(noise, 0);
+const noise = fs.readFileSync(path.join('public', 'audio', 'white-noise.wav'));
+const sweep = fs.readFileSync(path.join('public', 'audio', 'sweep.wav'));
 
-export function testAudio(dotpi) {
+const buffers = {
+  noise: await audioContext.decodeAudioData(noise.buffer),
+  sweep: await audioContext.decodeAudioData(sweep.buffer),
+};
+
+export function testAudio(global, dotpi) {
   dotpi.onUpdate(updates => {
     if ('testAudio' in updates) {
+      if (audioContextError !== null) {
+        dotpi.set({
+            stderr: {
+            cmd: 'testAudio',
+            pwd: 'dotpi/runtime',
+            msg:`Cannot test audio: ${audioContextError.message}\n`,
+            panelLabel: 'global',
+          },
+        });
+        return;
+      }
+
+      const source = global.get('testAudioSource');
       const src = audioContext.createBufferSource();
-      src.buffer = buffer;
+      src.buffer = buffers[source];
       src.connect(audioContext.destination);
       src.start();
     }

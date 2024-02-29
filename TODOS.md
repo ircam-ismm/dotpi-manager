@@ -1,5 +1,6 @@
 # TODOS
 
+- [ ] fix select/unselect rpi logs
 - [ ] sync
 - [ ] filter logs
 
@@ -7,6 +8,8 @@
 - [x] use index from plugin check to create hostname
 
 ## Control panels
+- [ ] store screen position into local storage
+      cf. implement in sc-components
 - [ ] use id as opposed to label in sc-tab controller 
       cf. https://github.com/ircam-ismm/sc-components/issues/40
 - [ ] fix text input to prevent new lines
