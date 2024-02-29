@@ -28,8 +28,9 @@ import { DiscoveryClient, BROADCAST_PORT } from '@ircam/node-discovery';
 // - Wizard & Tools:        `npx soundworks`
 
 const managerVersion = JSON5.parse(fs.readFileSync('package.json')).version;
-// const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
-const soundworksVersion = 'notTheSameVersion';
+const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
+// const managerVersion = 'coucou';
+// const soundworksVersion = 'notTheSameVersion';
 
 async function bootstrap() {
   try {

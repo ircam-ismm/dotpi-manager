@@ -222,7 +222,7 @@ dotpiCollection.onAttach(dotpi => {
 });
 
 // register controllers
-rsync(controlPanelCollection, dotpiCollection);
+rsync(global, controlPanelCollection, dotpiCollection);
 logger(server, dotpiCollection);
 
 // run the discovery server

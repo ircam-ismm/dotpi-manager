@@ -179,7 +179,7 @@ class DotPiLog extends LitElement {
 
         return true;
       })
-      .filter(log => this.app.logSelected.has(log.hostname));
+      .filter(log => !log.hostname || this.app.logSelected.has(log.hostname));
 
     if (this._logFilterRegExp !== '') {
       const re = new RegExp(this._logFilterRegExp);
@@ -272,6 +272,17 @@ class DotPiLog extends LitElement {
       });
 
       if ('stderr' in updates) {
+        this._hasNewErrors = true;
+      }
+    });
+
+    this.app.global.onUpdate(updates => {
+      if ('stderr' in updates) {
+        const log = updates['stderr'];
+        log.date = new Date();
+        log.type = 'stderr';
+
+        this.stack.insert(log);
         this._hasNewErrors = true;
       }
     });

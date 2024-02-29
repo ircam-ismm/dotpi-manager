@@ -34,7 +34,9 @@ function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
     // prevent writing into home
     // @todo - report errors to controller
     if (remotePath.replace(/\/$/, '') === remoteHome.replace(/\/$/, '')) {
-      console.warn('Syncing into remote $HOME is forbidden');
+      const msg = 'Cannot synchronize - Syncing into remote $HOME is forbidden';
+      dotpi.set({ stderr: { msg, source: controlPanel.get('label') }});
+      console.error(msg);
       return;
     }
 
@@ -50,8 +52,9 @@ function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
 
     exec(cmd, (err, stdout, stderr) => {
       if (err) {
-        // @todo - report errors to controller
-        console.log(err);
+        const msg = err.message;
+        dotpi.set({ stderr: { msg, source: controlPanel.get('label') }});
+        console.error(msg);
       }
 
       controlPanel.set({ syncingListDelete: hostname });
@@ -59,15 +62,16 @@ function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
   });
 }
 
-export function rsync(controlPanelCollection, dotpiCollection) {
+export function rsync(global, controlPanelCollection, dotpiCollection) {
 
   controlPanelCollection.onUpdate((controlPanel, updates) => {
     if ('syncTrigger' in updates || 'syncWatch' in updates) {
       const localPath = path.normalize(controlPanel.get('localPath').replace(/^~/, localHome));
 
       if (!fs.existsSync(localPath)) {
-        // @todo - report errors to controller
-        console.error(`"${localPath}": No such local file or directory`);
+        const msg = `Cannot synchronize - ${localPath}": No such local file or directory`;
+        global.set({ stderr: { msg, source: controlPanel.get('label') } });
+        console.error(msg);
         return;
       }
 
@@ -97,7 +101,7 @@ export function rsync(controlPanelCollection, dotpiCollection) {
 
           watcher.on('all', debounce(() => {
             doSync(controlPanel, dotpiCollection, localPath, remotePath);
-          }), 500, {
+          }), 1000, {
             leading: true,
             trailing: true,
           });

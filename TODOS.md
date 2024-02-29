@@ -8,7 +8,6 @@
 - [x] sync
 - [x] feedback in controller if discrepancies with versions
 - [ ] report errors from server (e.g. rsync) into controller
-- [ ] rename std panelLabel to source
 
 ## GUI / Usability Improvements
 - [ ] store screen position into local storage
