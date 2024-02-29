@@ -11,14 +11,14 @@
 - [x] review panel layout
 
 ## GUI / Usability Improvements
-- [ ] store screen position into local storage
+- [x] store screen position into local storage
       cf. implement in sc-components
-- [ ] use id as opposed to label in sc-tab controller 
-      cf. https://github.com/ircam-ismm/sc-components/issues/40
-- [ ] fix text input to prevent new lines
+- [x] fix text input to prevent new lines
       cf. https://github.com/ircam-ismm/sc-components/issues/36
 - [ ] add placeholder for filter / update on @input
       cf. https://github.com/ircam-ismm/sc-components/issues/36
+- [ ] use id as opposed to label in sc-tab controller 
+      cf. https://github.com/ircam-ismm/sc-components/issues/40
 - [ ] highlight icons when one in list is active, mainly for execute, sync)
       cf. https://github.com/ircam-ismm/sc-components/issues/29
 

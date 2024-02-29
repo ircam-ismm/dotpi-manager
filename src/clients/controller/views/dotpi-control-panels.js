@@ -27,6 +27,9 @@ class DotPiControlPanels extends LitElement {
 
     header sc-tab {
       width: 100%;
+      border-top: none;
+      border-left: none;
+      border-right: none;
     }
 
     h3 {
@@ -100,7 +103,7 @@ class DotPiControlPanels extends LitElement {
                 const originalLabel = this.app.controlPanel.get('label');
                 const labels = this.app.controlPanelCollection.get('label');
                 labels.splice(labels.indexOf(originalLabel), 1);
-                let label = e.detail.value.replace(/(\r\n|\n|\r)/gm, '');
+                let label = e.detail.value.trim();
                 const prefix = label;
                 let number = 1;
 
@@ -125,7 +128,7 @@ class DotPiControlPanels extends LitElement {
               <sc-text
                 value=${this.app.controlPanel.get('remotePath')}
                 editable
-                @change=${e => this.app.controlPanel.set({ remotePath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+                @change=${e => this.app.controlPanel.set({ remotePath: e.detail.value.trim() })}
               ></sc-text>
             </div>
             <div>
@@ -133,7 +136,7 @@ class DotPiControlPanels extends LitElement {
               <sc-text
                 value=${this.app.controlPanel.get('command')}
                 editable
-                @change=${e => this.app.controlPanel.set({ command: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+                @change=${e => this.app.controlPanel.set({ command: e.detail.value.trim() })}
               ></sc-text>
             </div>
             <div>
@@ -154,7 +157,7 @@ class DotPiControlPanels extends LitElement {
               <sc-text
                 value=${this.app.controlPanel.get('localPath')}
                 editable
-                @change=${e => this.app.controlPanel.set({ localPath: e.detail.value.replace(/(\r\n|\n|\r)/gm, '') })}
+                @change=${e => this.app.controlPanel.set({ localPath: e.detail.value.trim() })}
               ></sc-text>
             </div>
             <div>

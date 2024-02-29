@@ -8,7 +8,6 @@ import '@ircam/sc-components/sc-icon.js';
 import '@ircam/sc-components/sc-fullscreen.js';
 
 import '../components/sw-audit.js';
-// import './views/dotpi-commands.js';
 import './views/dotpi-control-panels.js';
 import './views/dotpi-client-list.js';
 import './views/dotpi-log.js';
@@ -141,10 +140,10 @@ async function main($container) {
         <div id="main">
           <div class="col-left">
             <dotpi-control-panels .app=${this}></dotpi-control-panels>
-            <sc-separator direction="column"></sc-separator>
+            <sc-separator direction="column" id="sep-2"></sc-separator>
             <dotpi-client-list .app=${this}></dotpi-client-list>
           </div>
-          <sc-separator direction="row"></sc-separator>
+          <sc-separator direction="row" id="sep-1"></sc-separator>
           <dotpi-log class="col-right" .app=${this}></dotpi-log>
         </div>
       `, $container);
