@@ -127,6 +127,10 @@ body.loading {
   }
 }
 
+sc-separator {
+  z-index: 10000;
+}
+
 dotpi-client-list {
   z-index: 1000;
 }
