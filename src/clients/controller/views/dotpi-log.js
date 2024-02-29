@@ -8,10 +8,11 @@ import '@ircam/sc-components/sc-icon.js';
 import '@ircam/sc-components/sc-status.js';
 
 class LogStack {
-  constructor(size) {
+  constructor(component) {
     this._size = 200;
     this._inner = [];
     this._numErr = 0;
+    this._component = component;
   }
 
   get values() {
@@ -36,15 +37,20 @@ class LogStack {
         this._numErr -= 1;
       }
     }
+
+    this._component.requestUpdate();
   }
 
   clear() {
     this._inner.length = 0;
     this._numErr = 0;
+
+    this._component.requestUpdate();
   }
 
   deleteLogsFrom(hostname) {
     this._inner.filter(log => log.hostname !== hostname);
+    this._component.requestUpdate();
   }
 
   map(func) {
@@ -131,12 +137,12 @@ class DotPiLog extends LitElement {
     }
 
     .log header sc-text:first-child {
-      width: 40%;
+      width: 60%;
       user-select: none;
     }
 
     .log header sc-text:last-child {
-      width: 60%;
+      width: 40%;
       padding-right: 12px;
     }
 
@@ -161,7 +167,7 @@ class DotPiLog extends LitElement {
     this._hasNewErrors = false;
     this._logFilterRegExp = '';
 
-    this.stack = new LogStack();
+    this.stack = new LogStack(this);
   }
 
   render() {
@@ -198,7 +204,7 @@ class DotPiLog extends LitElement {
           <sc-icon
             type="close"
             title="clear all logs"
-            @input=${e => this._clearStack()}
+            @input=${e => this.stack.clear()}
           >clear</sc-icon>
         </div>
       </header>
@@ -209,8 +215,11 @@ class DotPiLog extends LitElement {
               <header
                 @dblclick=${() => this._selectLogsFromHostname(log.hostname)}
               >
-                <sc-text>[${log.date.toLocaleString()}] ${log.hostname} (${log.panelLabel})</sc-text>
-                <sc-text style="text-align: right;">cmd: ${log.cmd} | pwd: ${log.pwd}</sc-text>
+                <sc-text>[${log.date.toLocaleString()}][${log.source}] ${log.hostname}</sc-text>
+                ${log.cmd && log.cwd
+                  ? html`<sc-text style="text-align: right;">cmd: ${log.cmd} | pwd: ${log.pwd}</sc-text>`
+                  : html`<sc-text style="text-align: right;"></sc-text>`
+                }
               </header>
               <sc-code-example language="text">${log.msg}</sc-code-example>
             </div>
@@ -223,18 +232,42 @@ class DotPiLog extends LitElement {
   firstUpdated() {
     super.firstUpdated();
 
-    this.app.dotpiCollection.onUpdate((rpi, updates) => {
-      const hostname = rpi.get('hostname');
+    this.app.dotpiCollection.onAttach(dotpi => {
+      const serverManagerVersion = this.app.global.get('managerVersion');
+      const serverSoundworksVersion = this.app.global.get('soundworksVersion');
+      const dotpiManagerVersion = dotpi.get('managerVersion');
+      const dotpiSoundworksVersion = dotpi.get('soundworksVersion');
+
+      if (serverManagerVersion !== dotpiManagerVersion
+        || serverSoundworksVersion !== dotpiSoundworksVersion
+      ) {
+        const log = {
+          msg: `Version discrepancies between manager server and client runtime:
+
++ manager    - server: ${serverManagerVersion} | client: ${dotpiManagerVersion}
++ soundworks - server: ${serverSoundworksVersion} | client: ${dotpiSoundworksVersion}
+          `,
+          source: 'global',
+          date: new Date(),
+          hostname: dotpi.get('hostname'),
+          type: 'stderr',
+        };
+
+        this.stack.insert(log);
+      }
+    }, true);
+
+    this.app.dotpiCollection.onUpdate((dotpi, updates) => {
+      const hostname = dotpi.get('hostname');
 
       ['stdout', 'stderr'].forEach(type => {
         if (type in updates) {
-          const log = updates[type]; // { pwd, pwd, msgs }
+          const log = updates[type]; // { cmd, pwd, msg }
           log.date = new Date();
           log.hostname = hostname;
           log.type = type;
 
           this.stack.insert(log);
-          this.requestUpdate();
         }
       });
 
@@ -250,11 +283,6 @@ class DotPiLog extends LitElement {
     } else {
       this._showOnly = msgType;
     }
-  }
-
-  _clearStack() {
-    this.stack.clear();
-    this.requestUpdate();
   }
 
   _selectLogsFromHostname(hostname) {

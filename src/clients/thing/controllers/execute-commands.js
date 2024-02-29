@@ -6,12 +6,12 @@ import terminate from 'terminate/promise.js';
 const spawnedProcesses = new Map();
 
 class LogStack {
-  constructor(type, dotpi, cmd, pwd, panelLabel) {
+  constructor(type, dotpi, cmd, pwd, source) {
     this.type = type;
     this.dotpi = dotpi;
     this.cmd = cmd;
     this.pwd = pwd;
-    this.panelLabel = panelLabel;
+    this.source = source;
     this.msg = ``;
     this.timeoutId = null;
   }
@@ -21,8 +21,8 @@ class LogStack {
     this.msg += msg;
 
     this.timeoutId = setTimeout(() => {
-      const { cmd, pwd, msg, panelLabel } = this;
-      const log = { cmd, pwd, msg, panelLabel };
+      const { cmd, pwd, msg, source } = this;
+      const log = { cmd, pwd, msg, source };
       this.dotpi.set({ [this.type]: log });
       this.msg = ``;
     }, 500);
@@ -36,7 +36,7 @@ export function executeCommands(controlPanelCollection, dotpi) {
 
   controlPanelCollection.onUpdate((controlPanel, updates) => {
     const panelId = controlPanel.get('id');
-    const panelLabel = controlPanel.get('label');
+    const source = controlPanel.get('label');
     let cmd = controlPanel.get('command');
     // ensure npm install is a bit verbose
     if (cmd === 'npm install') {
@@ -63,7 +63,7 @@ export function executeCommands(controlPanelCollection, dotpi) {
               cmd,
               pwd,
               msg:`Cannot terminate process (${pid}): ${err.message}\n`,
-              panelLabel,
+              source,
             },
           });
         }
@@ -81,7 +81,7 @@ export function executeCommands(controlPanelCollection, dotpi) {
               cmd,
               pwd,
               msg: `"${pwd}": No such file or directory\n`,
-              panelLabel,
+              source,
             },
           });
           controlPanel.set({ executingCommandListDelete: hostname });
@@ -91,8 +91,8 @@ export function executeCommands(controlPanelCollection, dotpi) {
         const parts = cmd.trim().split(/\s+/);
         const command = parts.shift();
         const args = parts;
-        const stdoutStack = new LogStack('stdout', dotpi, cmd, pwd, panelLabel);
-        const stderrStack = new LogStack('stderr', dotpi, cmd, pwd, panelLabel);
+        const stdoutStack = new LogStack('stdout', dotpi, cmd, pwd, source);
+        const stderrStack = new LogStack('stderr', dotpi, cmd, pwd, source);
 
         const spawned = spawn(command, args, {
           cwd: pwd,

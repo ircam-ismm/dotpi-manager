@@ -28,8 +28,8 @@ import { DiscoveryClient, BROADCAST_PORT } from '@ircam/node-discovery';
 // - Wizard & Tools:        `npx soundworks`
 
 const managerVersion = JSON5.parse(fs.readFileSync('package.json')).version;
-const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
-// const soundworksVersion = 'notTheSameVersion';
+// const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
+const soundworksVersion = 'notTheSameVersion';
 
 async function bootstrap() {
   try {
@@ -73,7 +73,7 @@ async function bootstrap() {
 
 WARNING
 
-Version discepancies between manager server and client:
+Version discepancies between manager server and client runtime:
 + manager    - server: ${rinfo.payload.managerVersion} | local: ${managerVersion}
 + soundworks - server: ${rinfo.payload.soundworksVersion} | local: ${soundworksVersion}
 
@@ -115,13 +115,15 @@ You should consider running:
     const global = await client.stateManager.attach('global');
 
     const dotpi = await client.stateManager.create('dotpi', {
-      address: linfo.address,
-      port,
       hostname,
+      isDebugClient,
       home,
       user,
       uid,
-      isDebugClient,
+      address: linfo.address,
+      port,
+      managerVersion,
+      soundworksVersion,
     });
 
     const controlPanelCollection = await client.stateManager.getCollection('control-panel');

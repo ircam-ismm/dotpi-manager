@@ -4,16 +4,6 @@ export default {
     default: null,
     nullable: true,
   },
-  address: {
-    type: 'string',
-    default: null,
-    nullable: true,
-  },
-  port: {
-    type: 'integer',
-    default: null,
-    nullable: true,
-  },
   isDebugClient: {
     type: 'boolean',
     default: false,
@@ -33,6 +23,25 @@ export default {
     default: null,
     nullable: true,
   },
+  address: {
+    type: 'string',
+    default: null,
+    nullable: true,
+  },
+  port: {
+    type: 'integer',
+    default: null,
+    nullable: true,
+  },
+  managerVersion: {
+    type: 'string',
+    default: '',
+  },
+  soundworksVersion: {
+    type: 'string',
+    default: '',
+  },
+
   hasInternet: {
     type: 'boolean',
     default: false,
@@ -41,13 +50,12 @@ export default {
     type: 'boolean',
     event: true,
   },
-
   stdout: {
-    type: 'any', // cmd, pwd, msg, panelLabel
+    type: 'any', // cmd, pwd, msg, source
     event: true,
   },
   stderr: {
-    type: 'any', // cmd, pwd, msg, panelLabel
+    type: 'any', // cmd, pwd, msg, source
     event: true,
   },
 };

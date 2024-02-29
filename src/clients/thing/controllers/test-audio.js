@@ -25,11 +25,9 @@ export function testAudio(global, dotpi) {
     if ('testAudio' in updates) {
       if (audioContextError !== null) {
         dotpi.set({
-            stderr: {
-            cmd: 'testAudio',
-            pwd: 'dotpi/runtime',
+          stderr: {
             msg:`Cannot test audio: ${audioContextError.message}\n`,
-            panelLabel: 'global',
+            source: 'runtime',
           },
         });
         return;

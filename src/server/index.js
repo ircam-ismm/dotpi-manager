@@ -58,7 +58,10 @@ server.stateManager.registerSchema('control-panel', controlPanelSchema);
 
 await server.start();
 
-const global = await server.stateManager.create('global');
+const global = await server.stateManager.create('global', {
+  managerVersion,
+  soundworksVersion,
+});
 const dotpiCollection = await server.stateManager.getCollection('dotpi');
 // control panel collection for usage in sync directory controller
 const controlPanelCollection = await server.stateManager.getCollection('control-panel');

@@ -1,4 +1,16 @@
 export default {
+  managerVersion: {
+    type: 'string',
+    default: '',
+  },
+  soundworksVersion: {
+    type: 'string',
+    default: '',
+  },
+  stderr: {
+    type: 'any', // cmd, pwd, msg, source
+    event: true,
+  },
 
   dotpiSeen: {
     type: 'any',
