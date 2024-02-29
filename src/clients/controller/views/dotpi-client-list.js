@@ -25,7 +25,6 @@ class DotPiClientList extends LitElement {
       height: 100%;
       padding: 12px;
       background-color: var(--sc-color-primary-1);
-      z-index: 1000;
 
       --dotpi-icons-width: 240px;
       --dotpi-client-list-header-height: 26px;

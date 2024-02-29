@@ -80,7 +80,6 @@ class DotPiLog extends LitElement {
       display: block;
       width: 100%;
       height: calc(100% - var(--sw-header-height));
-      /* @fixme: issue with icons from client list, they appear on top of logs */
     }
 
     header {

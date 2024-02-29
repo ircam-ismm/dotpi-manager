@@ -76,7 +76,7 @@ body.loading {
   height: calc(100vh - var(--sw-header-height));
 
   .col-left {
-    width: max(800px, 60%);
+    width: max(800px, 60vw);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -125,6 +125,10 @@ body.loading {
     left: 0;
     z-index: 10;
   }
+}
+
+dotpi-client-list {
+  z-index: 1000;
 }
 
 dotpi-log {
