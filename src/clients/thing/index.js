@@ -134,7 +134,7 @@ You should consider running:
 
     executeCommands(controlPanelCollection, dotpi);
 
-    rebootAndShutdown(global);
+    rebootAndShutdown(global, dotpi);
     // testing
     // testPushLogs(dotpi);
   } catch(err) {

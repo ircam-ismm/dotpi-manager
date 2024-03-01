@@ -120,8 +120,7 @@ server.stateManager.registerUpdateHook('control-panel', (updates, currentValues)
         if (index !== -1) {
           executingCommandList.splice(index, 1);
         }
-        const executeCommand = executingCommandList.length > 0 ? true : false;
-        return { executingCommandList, executeCommand };
+        return { executingCommandList };
         break;
       }
     }

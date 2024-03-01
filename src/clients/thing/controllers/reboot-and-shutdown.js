@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 
-export function rebootAndShutdown(global) {
+export function rebootAndShutdown(global, dotpi) {
   global.onUpdate(updates => {
     if ('reboot' in updates) {
       const isDebug = dotpi.get('isDebugClient');
@@ -9,7 +9,7 @@ export function rebootAndShutdown(global) {
       console.log('Rebooting system');
 
       if (!isDebug) {
-        execSync(`sudo shutdown -r now`, { uid });
+        execSync(`sudo reboot`, { uid });
       }
     }
 

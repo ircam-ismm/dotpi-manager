@@ -1,5 +1,17 @@
 # TODOS
 
+##
+- [ ] check process is closed when panel is deleted
+- [ ] empty command crashes the client
+- [ ] dotpi-list should not scroll
+
+- [ ] maybe do not propagate rsync errors
+- [ ] problem with fork
+- [ ] reboot does not work
+- [ ] clean disconnected rpi from execute list
+
+- [ ] # clients executing command: 77 !!!???
+
 ## Chore
 - [x] implement control panels
 - [x] fix filter list select/unselect all
