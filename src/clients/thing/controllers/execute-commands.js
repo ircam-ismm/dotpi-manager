@@ -29,10 +29,19 @@ class LogStack {
   }
 }
 
+function killCommand(pid, isDebugClient) {
+  if (isDebugClient) {
+    terminate(pid); // we don't want to have passwords in debug
+  } else {
+    execSync(`sudo kill ${pid}`);
+  }
+}
+
 export function executeCommands(controlPanelCollection, dotpi) {
   const hostname = dotpi.get('hostname');
   const home = dotpi.get('home');
   const uid = dotpi.get('uid');
+  const isDebugClient = dotpi.get('isDebugClient')
 
   controlPanelCollection.onUpdate((controlPanel, updates) => {
     const panelId = controlPanel.get('id');
@@ -54,9 +63,9 @@ export function executeCommands(controlPanelCollection, dotpi) {
         try {
           const pid = spawnedProcesses.get(panelId);
           spawnedProcesses.delete(panelId);
-          controlPanel.set({ executingCommandListDelete: hostname });
 
-          terminate(pid); // no need to await, this just creates race conditions
+          killCommand(pid, isDebugClient);
+          controlPanel.set({ executingCommandListDelete: hostname });
         } catch (err) {
           dotpi.set({
             stderr: {
@@ -94,6 +103,19 @@ export function executeCommands(controlPanelCollection, dotpi) {
         const stdoutStack = new LogStack('stdout', dotpi, cmd, pwd, source);
         const stderrStack = new LogStack('stderr', dotpi, cmd, pwd, source);
 
+        if (command === '') {
+          dotpi.set({
+            stderr: {
+              cmd,
+              pwd,
+              msg: `Execute command: command cannot be empty\n`,
+              source,
+            },
+          });
+          controlPanel.set({ executingCommandListDelete: hostname });
+          return;
+        }
+
         const spawned = spawn(command, args, {
           cwd: pwd,
           uid,
@@ -126,7 +148,8 @@ export function executeCommands(controlPanelCollection, dotpi) {
       const pid = spawnedProcesses.get(panelId);
       console.log('> [executeCommand] Panel closed, killing process:', pid);
       spawnedProcesses.delete(panelId);
-      terminate(pid);
+      killCommand(pid, isDebugClient);
+      // terminate(pid);
     }
   });
 }

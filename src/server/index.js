@@ -220,6 +220,18 @@ dotpiCollection.onAttach(dotpi => {
   }
 });
 
+dotpiCollection.onDetach(dotpi => {
+  const hostname = dotpi.get('hostname');
+
+  controlPanelCollection.forEach(controlPanel => {
+    controlPanel.set({
+      executingCommandListDelete: hostname,
+      syncingListDelete: hostname,
+      filteredListDelete: [hostname],
+    });
+  });
+});
+
 // register controllers
 rsync(global, controlPanelCollection, dotpiCollection);
 logger(server, dotpiCollection);

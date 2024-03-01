@@ -1,16 +1,20 @@
 # TODOS
 
 ##
-- [ ] check process is closed when panel is deleted
-- [ ] empty command crashes the client
-- [ ] dotpi-list should not scroll
+- [x] check process is closed when panel is deleted
+- [x] empty command crashes the client
 
-- [ ] maybe do not propagate rsync errors
-- [ ] problem with fork
-- [ ] reboot does not work
-- [ ] clean disconnected rpi from execute list
+- [x] problem with fork
+      - [x] sudo issue
+      -> replaced `terminate` w/ `sudo kill pid`
+- [x] reboot does not work
+- [x] remove hostname from all lists on disconnect
 
-- [ ] # clients executing command: 77 !!!???
+- [ ] sync feedback does not work
+
+- [ ] remove launcher from thing client
+- [ ] dotpi-list should not scroll (cf. firefox)
+- [ ] maybe do not propagate rsync errors (?)
 
 ## Chore
 - [x] implement control panels
