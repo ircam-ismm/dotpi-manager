@@ -137,7 +137,9 @@ You should consider running:
     rebootAndShutdown(global, dotpi);
     // testing
     // testPushLogs(dotpi);
-    console.log(`dotpi-manager started (version: ${managerVersion}, soundworks: ${soundworksVersion}`);
+    const msg = `dotpi-manager started (version: ${managerVersion}, soundworks: ${soundworksVersion}`;
+    console.log(msg);
+    dotpi.set({ stdout: { msg, source: 'runtime' } });
   } catch(err) {
     console.error(err);
   }
