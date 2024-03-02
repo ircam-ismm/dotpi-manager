@@ -2,7 +2,7 @@ import '@soundworks/helpers/polyfills.js';
 import { Client } from '@soundworks/core/client.js';
 import launcher from '@soundworks/helpers/launcher.js';
 
-import { html, render } from 'lit';
+import { html, render, nothing } from 'lit';
 import '@ircam/sc-components/sc-separator.js';
 import '@ircam/sc-components/sc-icon.js';
 import '@ircam/sc-components/sc-fullscreen.js';
@@ -118,6 +118,13 @@ async function main($container) {
             <sw-audit .client="${client}"></sw-audit>
             <sc-fullscreen></sc-fullscreen>
             <sc-icon
+              type="burger"
+              @click=${e => {
+                this.showDebugPanel = !this.showDebugPanel;
+                this.render();
+              }}
+            ></sc-icon>
+            <sc-icon
               type="redo"
               @click=${e => {
                 const result = confirm('Are you sure you want to reboot all dotpi clients?');
@@ -139,13 +146,23 @@ async function main($container) {
         </header>
         <div id="main">
           <div class="col-left">
-            <dotpi-control-panels .app=${this}></dotpi-control-panels>
+            <dotpi-control-panels .app=${this} style="height: 50%;"></dotpi-control-panels>
             <sc-separator direction="column" id="sep-2"></sc-separator>
-            <dotpi-client-list .app=${this}></dotpi-client-list>
+            <dotpi-client-list .app=${this} style="height: 50%;"></dotpi-client-list>
           </div>
           <sc-separator direction="row" id="sep-1"></sc-separator>
           <dotpi-log class="col-right" .app=${this}></dotpi-log>
         </div>
+        ${this.showDebugPanel
+          ? html`
+            <div id="debug-panel">
+              <sc-button
+                @input=${e => this.controlPanel.set({ debugTriggerError: true })}
+              >Trigger Error in runtime</sc-button>
+            </div>`
+          : nothing
+        }
+
       `, $container);
     },
   }

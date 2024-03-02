@@ -85,4 +85,11 @@ export default {
     event: true,
   },
 
+  // --------------------------------------------------------------------------
+  // filter comand and sync, if in list does not sync nor execute commands
+  // --------------------------------------------------------------------------
+  debugTriggerError: {
+    type: 'boolean',
+    event: true,
+  }
 }

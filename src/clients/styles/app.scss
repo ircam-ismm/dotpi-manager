@@ -141,3 +141,13 @@ dotpi-log {
   width: 50%;
   height: calc(100vh - var(--sw-header-height));
 }
+
+#debug-panel {
+  position: fixed;
+  top: var(--sw-header-height);
+  right: 0;
+  width: 220px;
+  padding: 10px;
+  z-index: 4000;
+  background-color: var(--sc-color-primary-1);
+}

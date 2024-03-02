@@ -54,6 +54,8 @@ class DotPiClientList extends LitElement {
       display: flex;
       justify-content: flex-end;
       margin-bottom: 3px;
+      padding-right: 10px;
+      box-sizing: border-box;
       min-width: 700px;
       overflow: auto;
     }
@@ -95,6 +97,8 @@ class DotPiClientList extends LitElement {
       height: calc(100% - 30px);
       background-color: var(--sc-color-primary-1);
       overflow: auto;
+      padding-right: 10px;
+      box-sizing: border-box;
     }
 
     .list dotpi-client {

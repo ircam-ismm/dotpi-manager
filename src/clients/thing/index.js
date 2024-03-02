@@ -13,10 +13,10 @@ import JSON5 from 'json5';
 import { loadConfig } from '../../utils/load-config.js';
 // controllers
 import { probeInternet } from './controllers/probe-internet.js';
-// import { executeCommands } from './controllers/exec-command.js';
 import { executeCommands } from './controllers/execute-commands.js';
 import { testAudio } from './controllers/test-audio.js';
 import { rebootAndShutdown } from './controllers/reboot-and-shutdown.js';
+import { debug } from './controllers/debug.js';
 // testing
 import { testPushLogs } from './testing/test-push-logs.js';
 
@@ -32,7 +32,6 @@ const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/
 // const managerVersion = 'coucou';
 // const soundworksVersion = 'notTheSameVersion';
 
-const debug = (process.env.DEBUG === '1') || false;
 let port;
 let hostname = os.hostname();
 let isDebugClient = false;
@@ -133,6 +132,7 @@ You should consider running:
     testAudio(global, dotpi);
 
     executeCommands(controlPanelCollection, dotpi);
+    debug(controlPanelCollection, dotpi);
 
     rebootAndShutdown(global, dotpi);
     // testing
