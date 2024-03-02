@@ -32,15 +32,15 @@ const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/
 // const managerVersion = 'coucou';
 // const soundworksVersion = 'notTheSameVersion';
 
-let port;
-let hostname = os.hostname();
-let isDebugClient = false;
-
 async function bootstrap() {
   try {
     // ---------------------------------------------------------
     // Start discovery process to find a server
     // ---------------------------------------------------------
+    let port;
+    let hostname = os.hostname();
+    let isDebugClient = false;
+
 
     if (hostname.startsWith('dotpi-')) {
       port = BROADCAST_PORT;
@@ -49,7 +49,6 @@ async function bootstrap() {
       port = await getPort();
       isDebugClient = true;
     }
-
     const home = os.homedir();
     // @todo - maybe use os.userInfo()
     const user = execSync(`whoami`).toString().replace(/\s$/g, '');
@@ -101,7 +100,10 @@ You should consider running:
     config.env.serverAddress = rinfo.address;
 
     const client = new Client(config);
-    launcher.register(client);
+    launcher.register(client, {
+      restartOnError: !isDebugClient,
+      restartOnSocketClose: true,
+    });
 
     client.pluginManager.register('checkin', pluginCheckin);
 
@@ -146,25 +148,11 @@ You should consider running:
   }
 }
 
-if (isDebugClient) {
-  // The launcher allows to fork multiple clients in the same terminal window
-  // by defining the `EMULATE` env process variable
-  // e.g. `EMULATE=10 npm run watch-process thing` to run 10 clients side-by-side
-  launcher.execute(bootstrap, {
-    numClients: process.env.EMULATE ? parseInt(process.env.EMULATE) : 1,
-    moduleURL: import.meta.url,
-    restartOnError: true,
-  });
-} else {
-  bootstrap(); // rely on dotpi-manager service
+// The launcher allows to fork multiple clients in the same terminal window
+// by defining the `EMULATE` env process variable
+// e.g. `EMULATE=10 npm run watch-process thing` to run 10 clients side-by-side
+launcher.execute(bootstrap, {
+  numClients: process.env.EMULATE ? parseInt(process.env.EMULATE) : 1,
+  moduleURL: import.meta.url,
+});
 
-  function exitHandler(msg) {
-    console.log('> exiting:', msg);
-    process.exit(1);
-  }
-
-  client.socket.addListener('close', () => exitHandler('Socket closed'));
-  client.socket.addListener('error', () => exitHandler('Socket errored'));
-  process.addListener('uncaughtException', err => exitHandler(err.message));
-  process.addListener('unhandledRejection', err => exitHandler(err.message));
-}
