@@ -12,7 +12,6 @@
     "clean": "soundworks-build -D",
     "dev": "npm run build && (concurrently -i -p \"none\" \"npm run watch:inspect server\" \"soundworks-build -b -w\" \"npm run watch:sass\")",
     "dotpi": "node src/clients/thing/index.js",
-    "postinstall": "soundworks-build -C",
     "start": "node .build/server/index.js",
     "watch": "soundworks-build -p",
     "watch:inspect": "soundworks-build -d -p",
