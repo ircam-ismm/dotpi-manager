@@ -25,7 +25,6 @@ class DotPiClient extends LitElement {
     :host {
       display: block;
       height: 30px;
-      background-color: var(--sw-light-background-color);
       display: flex;
       flex-direction: row;
       justify-content: space-between;

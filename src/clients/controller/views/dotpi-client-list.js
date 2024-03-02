@@ -106,6 +106,20 @@ class DotPiClientList extends LitElement {
       min-width: 700px;
       overflow: auto;
     }
+
+    .list dotpi-client:nth-child(even) {
+/*      background-color: var(--sw-light-background-color);*/
+      background-color: var(--sc-color-primary-2);
+    }
+
+    .list dotpi-client:nth-child(odd) {
+      background-color: var(--sc-color-primary-3);
+    }
+
+    sc-icon.active {
+      --sc-icon-color: var(--sc-color-secondary-2);
+      opacity: 1;
+    }
   `;
 
   constructor() {
@@ -125,6 +139,9 @@ class DotPiClientList extends LitElement {
         return found ? 0 : -1;
       })
       .filter(infos => re.test(infos.hostname)); // apply filter
+
+    const syncing = this.app.controlPanel.get('syncingList').length > 0;
+    const executingCommand = this.app.controlPanel.get('executingCommandList').length > 0;
 
     return html`
       <header>
@@ -147,8 +164,8 @@ class DotPiClientList extends LitElement {
         <div class="icons">
           <sc-icon disabled type="network" title="connected"></sc-icon>
           <sc-icon disabled type="internet" title="internet"></sc-icon>
-          <sc-icon disabled type="sync" title="syncing directory"></sc-icon>
-          <sc-icon disabled type="gear" title="executing process"></sc-icon>
+          <sc-icon disabled type="sync" title="syncing directory" class="${syncing ? 'active' : ''}"></sc-icon>
+          <sc-icon disabled type="gear" title="executing process" class="${executingCommand ? 'active' : ''}"></sc-icon>
           <sc-icon
             type="prompt"
             title="filter actions"

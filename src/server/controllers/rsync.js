@@ -9,7 +9,7 @@ import debounce from 'lodash/debounce.js';
 const localHome = os.homedir();
 const watchers = new Map(); // <panelId, watcher>
 
-function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
+async function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
   const filteredList = controlPanel.get('filteredList');
 
   const dotpiFilteredList = dotpiCollection.filter(dotpi => {
@@ -17,7 +17,8 @@ function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
     return filteredList.indexOf(hostname) === -1;
   });
 
-  dotpiFilteredList.forEach(dotpi => {
+  for (let i = 0; i < dotpiFilteredList.length; i++) {
+    const dotpi = dotpiFilteredList[i];
     const user = dotpi.get('user');
     const hostname = dotpi.get('hostname');
     const remoteHome = dotpi.get('home');
@@ -48,18 +49,18 @@ function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
       + ` --archive --exclude="node_modules" --delete`
       + ` "${localPath}/" "${dest}"`;
 
-    controlPanel.set({ syncingListAdd: hostname });
+    await controlPanel.set({ syncingListAdd: hostname });
 
-    exec(cmd, (err, stdout, stderr) => {
+    exec(cmd, async (err, stdout, stderr) => {
       if (err) {
         const msg = err.message;
         dotpi.set({ stderr: { msg, source: controlPanel.get('label') }});
         console.error(msg);
       }
 
-      controlPanel.set({ syncingListDelete: hostname });
+      await controlPanel.set({ syncingListDelete: hostname });
     });
-  });
+  }
 }
 
 export function rsync(global, controlPanelCollection, dotpiCollection) {

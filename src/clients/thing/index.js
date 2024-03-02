@@ -137,6 +137,7 @@ You should consider running:
     rebootAndShutdown(global, dotpi);
     // testing
     // testPushLogs(dotpi);
+
     const msg = `dotpi-manager started (version: ${managerVersion}, soundworks: ${soundworksVersion}`;
     console.log(msg);
     dotpi.set({ stdout: { msg, source: 'runtime' } });
@@ -156,4 +157,14 @@ if (isDebugClient) {
   });
 } else {
   bootstrap(); // rely on dotpi-manager service
+
+  function exitHandler(msg) {
+    console.log('> exiting:', msg);
+    process.exit(1);
+  }
+
+  client.socket.addListener('close', () => exitHandler('Socket closed'));
+  client.socket.addListener('error', () => exitHandler('Socket errored'));
+  process.addListener('uncaughtException', err => exitHandler(err.message));
+  process.addListener('unhandledRejection', err => exitHandler(err.message));
 }

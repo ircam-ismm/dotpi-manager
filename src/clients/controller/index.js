@@ -59,6 +59,14 @@ async function main($container) {
         });
       }
 
+      // this.controlPanelCollection.onUpdate((panel, updates) => {
+      //   if (this.controlPanel === panel) {
+      //     if ('syncingList' in updates) {
+      //       console.log(updates.syncingList);
+      //     }
+      //   }
+      // });
+
       this.controlPanelCollection.onAttach(panel => {
         this.controlPanelCollection.sort(p => p.get('id'));
         this.controlPanel = panel;
