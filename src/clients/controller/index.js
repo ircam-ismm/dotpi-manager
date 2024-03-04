@@ -39,11 +39,20 @@ async function main($container) {
     logSelected: new Set(),
     notifications: new Set(),
 
+    storagePanelKey: 'dotpi-manager:panel',
+
     async init() {
       // first control panel as default
       this.controlPanelCollection.sort(p => p.get('id'));
-      this.controlPanel = this.controlPanelCollection.find((p, i) => i === 0);
 
+      let panelLabel = localStorage.getItem(this.storagePanelKey);
+
+      if (panelLabel === null) {
+        const firstPanel = this.controlPanelCollection.find((p, i) => i === 0);
+        panelLabel = firstPanel.get('label');
+      }
+
+      this.setControlPanel(panelLabel);
       // Require secure context: This feature is available only in secure contexts (HTTPS),
       // in some or all supporting browsers. => ok in localhost
       // Notifications must be accepted system wide for the browser.
@@ -107,6 +116,12 @@ async function main($container) {
 
       this.global.onUpdate(() => this.render());
 
+      this.render();
+    },
+
+    setControlPanel(label) {
+      this.controlPanel = this.controlPanelCollection.find(p => p.get('label') === label);
+      localStorage.setItem(this.storagePanelKey, label);
       this.render();
     },
 

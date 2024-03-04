@@ -86,8 +86,7 @@ class DotPiControlPanels extends LitElement {
             } else {
               // @fixme: should use panel id,
               // cf. https://github.com/ircam-ismm/sc-components/issues/40
-              this.app.controlPanel = this.app.controlPanelCollection.find(p => p.get('label') === e.detail.value);
-              this.app.render();
+              this.app.setControlPanel(e.detail.value);
             }
           }}
         ></sc-tab>

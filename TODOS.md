@@ -1,5 +1,10 @@
 # TODOS
 
+- [ ] store current tab
+- [x] kill doesn't work at all
+  + [x] move back to terminate
+  + [x] prevent launching command in sudo
+
 ##
 - [x] check process is closed when panel is deleted
 - [x] empty command crashes the client

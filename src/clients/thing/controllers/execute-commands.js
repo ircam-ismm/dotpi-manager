@@ -30,11 +30,7 @@ class LogStack {
 }
 
 function killCommand(pid, isDebugClient) {
-  if (isDebugClient) {
-    terminate(pid); // we don't want to have passwords in debug
-  } else {
-    execSync(`sudo kill ${pid}`);
-  }
+  terminate(pid);
 }
 
 export function executeCommands(controlPanelCollection, dotpi) {
@@ -116,6 +112,20 @@ export function executeCommands(controlPanelCollection, dotpi) {
           return;
         }
 
+        // @todo - to be confirmed
+        if (command === 'sudo') {
+          dotpi.set({
+            stderr: {
+              cmd,
+              pwd,
+              msg: `Executing command in sudo is not allowed\n`,
+              source,
+            },
+          });
+          controlPanel.set({ executingCommandListDelete: hostname });
+          return;
+        }
+
         const spawned = spawn(command, args, {
           cwd: pwd,
           uid,
@@ -149,7 +159,6 @@ export function executeCommands(controlPanelCollection, dotpi) {
       console.log('> [executeCommand] Panel closed, killing process:', pid);
       spawnedProcesses.delete(panelId);
       killCommand(pid, isDebugClient);
-      // terminate(pid);
     }
   });
 }
