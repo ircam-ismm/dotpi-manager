@@ -100,9 +100,15 @@ class DotPiClient extends LitElement {
     const hasInternet = this._state ? this._state.get('hasInternet') : false;
     const testAudio = this._state ? this._state.get('testAudio') : false;
 
-    const syncing = this.app.controlPanel.get('syncingList').indexOf(hostname) !== -1;
-    const executingCommand = this.app.controlPanel.get('executingCommandList').indexOf(hostname) !== -1;
-    const filtered = this.app.controlPanel.get('filteredList').indexOf(hostname) !== -1;
+    const syncing = this.app.controlPanel
+      ? this.app.controlPanel.get('syncingList').indexOf(hostname) !== -1
+      : false;
+    const executingCommand = this.app.controlPanel
+      ? this.app.controlPanel.get('executingCommandList').indexOf(hostname) !== -1
+      : false;
+    const filtered = this.app.controlPanel
+      ? this.app.controlPanel.get('filteredList').indexOf(hostname) !== -1
+      : false;
 
     return html`
       <div class="infos">
@@ -132,7 +138,7 @@ class DotPiClient extends LitElement {
         <sc-status class="syncing" ?disabled=${!connected} ?active=${syncing}></sc-status>
         <sc-status class="executing" ?disabled=${!connected} ?active=${executingCommand}></sc-status>
         <sc-toggle
-          ?disabled=${!connected}
+          ?disabled=${!connected || !this.app.controlPanel}
           ?active=${!filtered}
           @change=${e => {
             const command = e.detail.value ? 'filteredListDelete' : 'filteredListAdd';

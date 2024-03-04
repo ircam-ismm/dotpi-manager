@@ -140,8 +140,12 @@ class DotPiClientList extends LitElement {
       })
       .filter(infos => re.test(infos.hostname)); // apply filter
 
-    const syncing = this.app.controlPanel.get('syncingList').length > 0;
-    const executingCommand = this.app.controlPanel.get('executingCommandList').length > 0;
+    const syncing = this.app.controlPanel
+      ? this.app.controlPanel.get('syncingList').length > 0
+      : false;
+    const executingCommand = this.app.controlPanel
+      ? this.app.controlPanel.get('executingCommandList').length > 0
+      : false;
 
     return html`
       <header>
@@ -173,7 +177,10 @@ class DotPiClientList extends LitElement {
               this._filterAllClients = !this._filterAllClients;
               const hostnames = this.app.dotpiCollection.get('hostname');
               const command = this._filterAllClients ? 'filteredListAdd' : 'filteredListDelete';
-              this.app.controlPanel.set({ [command]: hostnames });
+
+              if (this.app.controlPanel) {
+                this.app.controlPanel.set({ [command]: hostnames });
+              }
             }}
           ></sc-icon>
           <sc-icon

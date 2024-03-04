@@ -78,23 +78,27 @@ async function main($container) {
 
       this.controlPanelCollection.onAttach(panel => {
         this.controlPanelCollection.sort(p => p.get('id'));
-        this.controlPanel = panel;
+        this.setControlPanel(panel.get('label'));
         this.render();
       });
 
       this.controlPanelCollection.onDetach(panel => {
         if (this.controlPanel === panel) {
-          this.controlPanelCollection.sort(p => p.get('id'))
-          this.controlPanel = this.controlPanelCollection.find((p, i) => i === 0);
-          // find closest previous id
-          const id = panel.get('id');
+          this.controlPanelCollection.sort(p => p.get('id'));
+          // default to first panel
+          let fallbackPanel = this.controlPanelCollection.find((p, i) => i === 0);
+          // find closest previous id if any
+          const deletedId = panel.get('id');
           let targetId = -1;
+
           for (let controlPanel of this.controlPanelCollection) {
             const controlPanelId = controlPanel.get('id');
-            if (controlPanelId > targetId && controlPanelId < id) {
-              this.controlPanel = controlPanel;
+            if (controlPanelId > targetId && controlPanelId < deletedId) {
+              fallbackPanel = controlPanel;
             }
           }
+
+          this.setControlPanel(fallbackPanel.get('label'));
         }
 
         this.render();
@@ -120,8 +124,15 @@ async function main($container) {
     },
 
     setControlPanel(label) {
-      this.controlPanel = this.controlPanelCollection.find(p => p.get('label') === label);
+      let panel = this.controlPanelCollection.find(p => p.get('label') === label);
+
+      if (!panel) {
+        panel = this.controlPanelCollection.find((p, i) => i === 0);
+      }
+
+      this.controlPanel = panel;
       localStorage.setItem(this.storagePanelKey, label);
+
       this.render();
     },
 
