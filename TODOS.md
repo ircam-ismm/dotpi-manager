@@ -1,6 +1,9 @@
 # TODOS
 
-- [ ] store current tab
+- [ ] review stdout and stderr logs, should be stacked in right order
+      -> list of type, cmd, cwd, type, msg, etc.
+
+- [x] store current tab
 - [x] kill doesn't work at all
   + [x] move back to terminate
   + [x] prevent launching command in sudo

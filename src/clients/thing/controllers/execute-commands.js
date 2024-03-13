@@ -1,7 +1,7 @@
 import { spawn, execSync } from 'node:child_process';
 import fs from 'node:fs';
 
-import terminate from 'terminate/promise.js';
+import terminate from 'terminate';
 
 const spawnedProcesses = new Map();
 
@@ -29,49 +29,33 @@ class LogStack {
   }
 }
 
-function killCommand(pid, isDebugClient) {
-  terminate(pid);
+// @fixme - with nested processes, e.g. `npm run watch thing`, there might still
+// be cases where we end up with gost processes. It seems to occur when terminate
+// is trigerred when the 1rst sub process is launching the second one (tbc)
+function killPanelProcess(panelId) {
+  const spawned = spawnedProcesses.get(panelId);
+  terminate(spawned.pid);
+  spawnedProcesses.delete(panelId);
 }
 
 export function executeCommands(controlPanelCollection, dotpi) {
   const hostname = dotpi.get('hostname');
   const home = dotpi.get('home');
   const uid = dotpi.get('uid');
-  const isDebugClient = dotpi.get('isDebugClient')
 
   controlPanelCollection.onUpdate((controlPanel, updates) => {
     const panelId = controlPanel.get('id');
     const source = controlPanel.get('label');
-    let cmd = controlPanel.get('command');
-    // ensure npm install is a bit verbose
-    if (cmd === 'npm install') {
-      // 2>$1 redirects stderr to stdout
-      cmd = `npm install --loglevel info 2>&1`;
-    }
-
+    const cmd = controlPanel.get('command');
     const pwd = controlPanel.get('remotePath').replace(/^~/, home);
 
     if ('executeCommand' in updates) {
       const { executeCommand } = updates;
 
-      // if there is any process still running, kill it
+      // if there is any process running, kill it
       if (spawnedProcesses.has(panelId)) {
-        try {
-          const pid = spawnedProcesses.get(panelId);
-          spawnedProcesses.delete(panelId);
-
-          killCommand(pid, isDebugClient);
-          controlPanel.set({ executingCommandListDelete: hostname });
-        } catch (err) {
-          dotpi.set({
-            stderr: {
-              cmd,
-              pwd,
-              msg:`Cannot terminate process (${pid}): ${err.message}\n`,
-              source,
-            },
-          });
-        }
+        killPanelProcess(panelId);
+        controlPanel.set({ executingCommandListDelete: hostname });
       }
 
       if (executeCommand) {
@@ -145,7 +129,8 @@ export function executeCommands(controlPanelCollection, dotpi) {
           controlPanel.set({ executingCommandListDelete: hostname });
         });
 
-        spawnedProcesses.set(panelId, spawned.pid);
+        spawnedProcesses.set(panelId, spawned);
+
         controlPanel.set({ executingCommandListAdd: hostname });
       }
     }
@@ -155,10 +140,8 @@ export function executeCommands(controlPanelCollection, dotpi) {
     const panelId = controlPanel.get('id');
 
     if (spawnedProcesses.has(panelId)) {
-      const pid = spawnedProcesses.get(panelId);
       console.log('> [executeCommand] Panel closed, killing process:', pid);
-      spawnedProcesses.delete(panelId);
-      killCommand(pid, isDebugClient);
+      killPanelProcess(panelId);
     }
   });
 }
