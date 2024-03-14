@@ -46,8 +46,12 @@ export function executeCommands(controlPanelCollection, dotpi) {
   controlPanelCollection.onUpdate((controlPanel, updates) => {
     const panelId = controlPanel.get('id');
     const source = controlPanel.get('label');
-    const cmd = controlPanel.get('command');
     const pwd = controlPanel.get('remotePath').replace(/^~/, home);
+    let cmd = controlPanel.get('command');
+
+    if (cmd === 'npm install') {
+      cmd = 'npm install --loglevel info';
+    }
 
     if ('executeCommand' in updates) {
       const { executeCommand } = updates;
