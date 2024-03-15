@@ -10,6 +10,11 @@ const localHome = os.homedir();
 const watchers = new Map(); // <panelId, watcher>
 
 async function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
+  if (remotePath.trim() === '') {
+    console.error('remote path is empty, aborting...');
+    return;
+  }
+
   const filteredList = controlPanel.get('filteredList');
 
   const dotpiFilteredList = dotpiCollection.filter(dotpi => {

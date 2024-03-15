@@ -50,7 +50,7 @@ export function executeCommands(controlPanelCollection, dotpi) {
     let cmd = controlPanel.get('command');
 
     if (cmd === 'npm install') {
-      cmd = 'npm install --loglevel info';
+      cmd = 'npm install --loglevel info 2>&1';
     }
 
     if ('executeCommand' in updates) {
