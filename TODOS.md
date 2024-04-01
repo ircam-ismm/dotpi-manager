@@ -2,6 +2,11 @@
 
 - [ ] review stdout and stderr logs, should be stacked in right order
       -> list of type, cmd, cwd, type, msg, etc.
+- [ ] list of connected / disconnected clients issue in Firefox
+
+- [ ] add button for led test
+- [ ] client should restart when loosing connection, define why
+      check journalctl logs
 
 - [x] store current tab
 - [x] kill doesn't work at all
@@ -18,10 +23,10 @@
 - [x] reboot does not work
 - [x] remove hostname from all lists on disconnect
 
-- [ ] sync feedback does not work
+- [x] sync feedback does not work
 
 - [ ] remove launcher from thing client
-- [ ] dotpi-list should not scroll (cf. firefox)
+- [x] dotpi-list should not scroll (cf. firefox)
 - [ ] maybe do not propagate rsync errors (?)
 
 ## Chore

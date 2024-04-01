@@ -72,13 +72,13 @@ async function bootstrap() {
 
 WARNING
 
-Version discepancies between manager server and client runtime:
+Version discrepancies between manager server and client runtime:
 + manager    - server: ${rinfo.payload.managerVersion} | local: ${managerVersion}
 + soundworks - server: ${rinfo.payload.soundworksVersion} | local: ${soundworksVersion}
 
 You should consider running:
 + \`rm -Rf node_modules && npm install\` on your server machine
-+ \`sudo dotpi manager_update\` on your remote devices
++ \`sudo dotpi manager_update\` on your dotpi devices
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
         }
