@@ -4,7 +4,7 @@
 
 dotpi_manager_update() (
   if [[ "$USER" != "root" ]]; then
-    dotpi_echo_error "This command must be run as root"
+    dotpi echo_error "This command must be run as root"
     return 1
   fi
 
@@ -16,11 +16,11 @@ dotpi_manager_update() (
 
   destination="${DOTPI_ROOT}/share/dotpi-manager"
   mkdir -p -- "$destination" || {
-    dotpi_echo_error "dotpi-manager: could not create directory: ${destination}"
+    dotpi echo_error "dotpi-manager: could not create directory: ${destination}"
     return 1
   }
   cd -- "$destination" || {
-    dotpi_echo_error "dotpi-manager: could not change to runtime: ${destination}"
+    dotpi echo_error "dotpi-manager: could not change to directory: ${destination}"
     return 1
   }
 
@@ -28,36 +28,31 @@ dotpi_manager_update() (
 
   dotpi service_uninstall --user "$service_name"
 
-  destination_runtime="${destination}/runtime"
+  runtime_relative_path='runtime'
+  destination_runtime="${destination}/${runtime_relative_path}"
 
   rm -rf -- "$destination_runtime"
-  mkdir -p -- "$destination_runtime" || {
-    dotpi_echo_error "dotpi-manager: could not create runtime directory: ${destination_runtime}"
-    return 1
-  }
-
   git clone --depth=1 https://github.com/ircam-ismm/dotpi-manager.git "$destination_runtime" || {
-    dotpi_echo_error "dotpi-manager: could not clone repositoryin in ${destination}"
+    dotpi echo_error "dotpi-manager: could not clone repositoryin in ${destination}"
     return 1
   }
-
-  ln -s -- "$destination_runtime/dotpi/dotpi-manager.bash" "$destination/dotpi-manager.bash" || {
-    dotpi_echo_error "dotpi-manager: could not create symlink in ${destination}"
-    return 1
-  }
-
-  ln -s -- "$destination_runtime/dotpi/dotpi-manager.service" "$destination/dotpi-manager.service" || {
-    dotpi_echo_error "dotpi-manager: could not create symlink in ${destination}"
-    return 1
-  }
-
   (
     cd -- "$destination_runtime" || {
-      dotpi_echo_error "could not change directory to runtime: ${destination_runtime}"
+      dotpi echo_error "could not change directory to runtime: ${destination_runtime}"
       exit 1
     }
-    npm install --omit=dev --loglevel verbose
+    npm install --omit dev --loglevel verbose
   )
+
+  ln -s -- "${runtime_relative_path}/dotpi/dotpi-manager.bash" "$destination/dotpi-manager.bash" || {
+    dotpi echo_error "dotpi-manager: could not create symlink in ${destination}"
+    return 1
+  }
+
+  ln -s -- "${runtime_relative_path}/dotpi/dotpi-manager.service" "$destination/dotpi-manager.service" || {
+    dotpi echo_error "dotpi-manager: could not create symlink in ${destination}"
+    return 1
+  }
 
   # user service: allow to run as the user
   chmod -R a+r "$destination"
