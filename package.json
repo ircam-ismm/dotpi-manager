@@ -21,7 +21,7 @@
   "dependencies": {
     "@ircam/node-discovery": "^2.2.0",
     "@ircam/sc-components": "^3.0.0-alpha.54",
-    "@soundworks/core": "^4.0.0-alpha.19",
+    "@soundworks/core": "^4.0.0-alpha.20",
     "@soundworks/helpers": "^1.0.0-alpha.10",
     "@soundworks/plugin-checkin": "^2.0.0-alpha.0",
     "@soundworks/plugin-logger": "^2.0.0-alpha.4",
@@ -32,7 +32,7 @@
     "json5": "^2.2.3",
     "lit": "^3.1.1",
     "lodash": "^4.17.21",
-    "node-web-audio-api": "^0.14.0",
+    "node-web-audio-api": "^0.20.0",
     "ping": "^0.4.4",
     "terminate": "^2.6.1"
   },
