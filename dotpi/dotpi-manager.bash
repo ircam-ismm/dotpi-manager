@@ -44,12 +44,12 @@ dotpi_manager_update() (
     npm install --omit dev --loglevel verbose
   )
 
-  ln -s -- "${runtime_relative_path}/dotpi/dotpi-manager.bash" "$destination/dotpi-manager.bash" || {
+  ln -s -f -- "${runtime_relative_path}/dotpi/dotpi-manager.bash" "$destination/dotpi-manager.bash" || {
     dotpi echo_error "dotpi-manager: could not create symlink in ${destination}"
     return 1
   }
 
-  ln -s -- "${runtime_relative_path}/dotpi/dotpi-manager.service" "$destination/dotpi-manager.service" || {
+  ln -s -f -- "${runtime_relative_path}/dotpi/dotpi-manager.service" "$destination/dotpi-manager.service" || {
     dotpi echo_error "dotpi-manager: could not create symlink in ${destination}"
     return 1
   }
