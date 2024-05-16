@@ -3,24 +3,24 @@ import path from 'node:path';
 
 import { AudioContext } from 'node-web-audio-api';
 
-let audioContext = null;
-let audioContextError = null;
+export async function testAudio(global, dotpi) {
+  let audioContext = null;
+  let audioContextError = null;
 
-try {
-  audioContext = new AudioContext();
-} catch (err) {
-  audioContextError = err;
-}
+  try {
+    audioContext = new AudioContext();
+  } catch (err) {
+    audioContextError = err;
+  }
 
-const noise = fs.readFileSync(path.join('public', 'audio', 'white-noise.wav'));
-const sweep = fs.readFileSync(path.join('public', 'audio', 'sweep.wav'));
+  const noise = fs.readFileSync(path.join('public', 'audio', 'white-noise.wav'));
+  const sweep = fs.readFileSync(path.join('public', 'audio', 'sweep.wav'));
 
-const buffers = {
-  noise: await audioContext.decodeAudioData(noise.buffer),
-  sweep: await audioContext.decodeAudioData(sweep.buffer),
-};
+  const buffers = {
+    noise: await audioContext.decodeAudioData(noise.buffer),
+    sweep: await audioContext.decodeAudioData(sweep.buffer),
+  };
 
-export function testAudio(global, dotpi) {
   dotpi.onUpdate(updates => {
     if ('testAudio' in updates) {
       if (audioContextError !== null) {
