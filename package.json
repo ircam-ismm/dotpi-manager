@@ -21,8 +21,8 @@
   "dependencies": {
     "@ircam/node-discovery": "^2.2.0",
     "@ircam/sc-components": "^3.0.0-alpha.54",
-    "@soundworks/core": "^4.0.0-alpha.20",
-    "@soundworks/helpers": "^1.0.0-alpha.10",
+    "@soundworks/core": "4.0.0-alpha.25",
+    "@soundworks/helpers": "^1.0.0-alpha.13",
     "@soundworks/plugin-checkin": "^2.0.0-alpha.0",
     "@soundworks/plugin-logger": "^2.0.0-alpha.4",
     "chalk": "^5.3.0",
