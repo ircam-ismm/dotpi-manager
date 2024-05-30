@@ -101,8 +101,8 @@ You should consider running:
 
     const client = new Client(config);
     launcher.register(client, {
-      restartOnError: !isDebugClient,
-      restartOnSocketClose: true,
+      // keep default behavior for dev clients, but exit all processes in production
+      exitParentProcess: !isDebugClient,
     });
 
     client.pluginManager.register('checkin', pluginCheckin);
@@ -140,7 +140,7 @@ You should consider running:
     // testing
     // testPushLogs(dotpi);
 
-    const msg = `dotpi-manager started (version: ${managerVersion}, soundworks: ${soundworksVersion}`;
+    const msg = `dotpi-manager started (version: ${managerVersion}, soundworks: ${soundworksVersion})`;
     console.log(msg);
     dotpi.set({ stdout: { msg, source: 'runtime' } });
   } catch(err) {
