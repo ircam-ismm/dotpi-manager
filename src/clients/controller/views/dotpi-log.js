@@ -209,7 +209,7 @@ class DotPiLog extends LitElement {
             type="close"
             title="clear all logs"
             @input=${e => this.stack.clear()}
-          >clear</sc-icon>
+          ></sc-icon>
         </div>
       </header>
       <section class="logs">

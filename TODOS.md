@@ -2,11 +2,17 @@
 
 - [ ] review stdout and stderr logs, should be stacked in right order
       -> list of type, cmd, cwd, type, msg, etc.
-- [ ] list of connected / disconnected clients issue in Firefox
+- [ ] list of connected / disconnected clients issue
 
 - [ ] add button for led test
 - [ ] client should restart when loosing connection, define why
       check journalctl logs
+
+- [ ] upgrade dotpi-manager per client when not in sync
+- [ ] have some macros for app tabs - check locally that it is a soundworks app
+      - [ ] launch server and clients --> need to choose the config
+      - [ ] update app
+      - [ ] etc.
 
 - [x] store current tab
 - [x] kill doesn't work at all
@@ -46,7 +52,7 @@
       cf. https://github.com/ircam-ismm/sc-components/issues/36
 - [ ] add placeholder for filter / update on @input
       cf. https://github.com/ircam-ismm/sc-components/issues/36
-- [ ] use id as opposed to label in sc-tab controller 
+- [ ] use id as opposed to label in sc-tab controller
       cf. https://github.com/ircam-ismm/sc-components/issues/40
 - [ ] highlight icons when one in list is active, mainly for execute, sync)
       cf. https://github.com/ircam-ismm/sc-components/issues/29

@@ -50,6 +50,20 @@ export default {
     type: 'boolean',
     event: true,
   },
+  testLight: {
+    type: 'boolean',
+    event: true,
+  },
+
+  upgrade: {
+    type: 'boolean',
+    event: true,
+  },
+  upgrading: {
+    type: 'boolean',
+    default: false,
+  },
+
   stdout: {
     type: 'any', // cmd, pwd, msg, source
     event: true,

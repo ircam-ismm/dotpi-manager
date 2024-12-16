@@ -89,6 +89,8 @@ class DotPiControlPanels extends LitElement {
               this.app.setControlPanel(e.detail.value);
             }
           }}
+          sortable
+          id="control-panels-tabs"
         ></sc-tab>
       </header>
       <div>
