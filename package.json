@@ -6,6 +6,8 @@
   "version": "0.1.4",
   "type": "module",
   "scripts": {
+    "postinstall": "./dotpi/dotpi_install",
+    "preuninstall": "./dotpi/dotpi_uninstall",
     "build": "npm run clean && sass src/clients/styles:.build/public/css && soundworks-build -b",
     "build:production": "npm run clean && soundworks-build -b -m",
     "clean": "soundworks-build -D",
