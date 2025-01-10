@@ -51,7 +51,7 @@ async function doSync(controlPanel, dotpiCollection, localPath, remotePath) {
       : `${user}@${hostname}.local:${remotePath}`;
 
     const cmd = `rsync --rsync-path='mkdir -p "${remotePath}" && rsync'`
-      + ` --archive --exclude="node_modules" --delete`
+      + ` --inplace --archive --exclude="node_modules" --delete`
       + ` "${localPath}/" "${dest}"`;
 
     await controlPanel.set({ syncingListAdd: hostname });
