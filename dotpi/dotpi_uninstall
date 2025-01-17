@@ -23,7 +23,7 @@ const localFileName = fileURLToPath(import.meta.url);
 const serviceName = 'dotpi-manager.service';
 
 try {
-  echo.info(`Install service ${serviceName}`);
+  echo.info(`Uninstall service ${serviceName}`);
 
   const output = await service.uninstall({
     name: serviceName,

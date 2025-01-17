@@ -3,7 +3,7 @@
   "description": "Manager for the dotpi prototyping environment",
   "authors": [],
   "license": "BSD-3-Clause",
-  "version": "0.1.4",
+  "version": "0.2.1",
   "type": "module",
   "scripts": {
     "postinstall": "./dotpi/dotpi_install",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@dotpi/javascript": "^1.3.0",
+    "@dotpi/module": "^1.4.2",
     "@ircam/node-discovery": "^2.2.0",
     "@ircam/sc-components": "^3.1.0",
     "@soundworks/core": "4.0.0-alpha.25",
