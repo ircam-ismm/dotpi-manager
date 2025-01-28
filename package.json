@@ -50,5 +50,6 @@
     "eslint": "^8.56.0",
     "lerna": "^8.1.9",
     "sass": "^1.69.7"
-  }
+  },
+  "gitHead": "365aefb6a8ed02db988a84024ca8c186f11a408b"
 }

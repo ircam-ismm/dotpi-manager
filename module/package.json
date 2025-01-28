@@ -17,5 +17,6 @@
   },
   "devDependencies": {
     "@ircam/eslint-config": "^1.3.0"
-  }
+  },
+  "gitHead": "365aefb6a8ed02db988a84024ca8c186f11a408b"
 }
