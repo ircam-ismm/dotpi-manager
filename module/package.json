@@ -3,7 +3,7 @@
   "description": "Manager module (dotpi client service))",
   "authors": [],
   "license": "BSD-3-Clause",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "postinstall": "./dotpi_install",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@dotpi/javascript": "^1.3.0",
-    "@dotpi/module": "^1.4.2",
-    "@dotpi/manager": "^0.3.0"
+    "@dotpi/manager": "^0.4.0",
+    "@dotpi/module": "^1.4.2"
   },
   "devDependencies": {
     "@ircam/eslint-config": "^1.3.0"
