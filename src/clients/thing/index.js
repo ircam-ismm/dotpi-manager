@@ -1,7 +1,12 @@
+#!/usr/bin/env node
+
 import os from 'node:os';
 import readline from 'node:readline';
 import { execSync } from 'node:child_process';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import module from 'node:module';
 
 import '@soundworks/helpers/polyfills.js';
 import { Client } from '@soundworks/core/client.js';
@@ -27,10 +32,18 @@ import { DiscoveryClient, BROADCAST_PORT } from '@ircam/node-discovery';
 // - Issue Tracker:         https://github.com/collective-soundworks/soundworks/issues
 // - Wizard & Tools:        `npx soundworks`
 
-const managerVersion = JSON5.parse(fs.readFileSync('package.json')).version;
-const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
-// const managerVersion = 'coucou';
-// const soundworksVersion = 'notTheSameVersion';
+// in ESM module, no built-in require
+const require = module.createRequire(import.meta.url);
+
+const localFileName = fileURLToPath(import.meta.url);
+const localPath = path.dirname(localFileName);
+
+const selfPackageFile = path.resolve(localPath, '..', '..', '..', 'package.json');
+const managerVersion = JSON5.parse(fs.readFileSync(selfPackageFile)).version;
+
+// waiting for version
+const soundworksPackageFile = path.resolve(require.resolve('@soundworks/core/server.js'), '..', '..', '..', 'package.json');
+const soundworksVersion = JSON5.parse(fs.readFileSync(soundworksPackageFile)).version;
 
 async function bootstrap() {
   try {
@@ -58,7 +71,7 @@ async function bootstrap() {
 
     // look for the server on the network
     const [rinfo, linfo] = await new Promise((resolve, reject) => {
-      const discoveryClient = new DiscoveryClient({ 
+      const discoveryClient = new DiscoveryClient({
         port: port,
         payload: { hostname },
       });

@@ -5,8 +5,8 @@ After=network-online.target jackd.service
 
 [Service]
 Type=exec
-ExecStart=/usr/bin/npm run dotpi
-WorkingDirectory=/opt/dotpi/lib/dotpi_modules/@dotpi/manager
+ExecStart=npx dotpi-manager-client
+WorkingDirectory=/opt/dotpi/lib/dotpi_modules/@dotpi/manager-module
 StandardOutput=inherit
 StandardError=inherit
 Restart=always

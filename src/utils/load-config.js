@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import JSON5 from 'json5';
 
@@ -32,8 +33,11 @@ export function loadConfig(ENV = 'default', callerURL = null) {
   let env = null;
   let app = null;
 
+  const localFileName = fileURLToPath(import.meta.url);
+  const localPath = path.dirname(localFileName);
+
   // parse env config
-  const envConfigFilepath = path.join('config', 'env', `${ENV}.json`);
+  const envConfigFilepath = path.resolve(localPath, '..', '..', 'config', `env-${ENV}.json`);
 
   try {
     env = JSON5.parse(fs.readFileSync(envConfigFilepath, 'utf-8'));
@@ -53,7 +57,7 @@ export function loadConfig(ENV = 'default', callerURL = null) {
   }
 
   // parse app config
-  const appConfigFilepath = path.join('config', 'application.json');
+  const appConfigFilepath = path.resolve(localPath, '..', '..', 'config', 'application.json');
 
   try {
     app = JSON5.parse(fs.readFileSync(appConfigFilepath, 'utf-8'));

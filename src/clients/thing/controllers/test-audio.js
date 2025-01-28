@@ -1,7 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { AudioContext } from 'node-web-audio-api';
+
+const localFileName = fileURLToPath(import.meta.url);
+const localPath = path.dirname(localFileName);
+const basePath = path.resolve(localPath, '..', '..', '..', '..');
 
 export async function testAudio(global, dotpi) {
   let audioContext = null;
@@ -13,8 +18,8 @@ export async function testAudio(global, dotpi) {
     audioContextError = err;
   }
 
-  const noise = fs.readFileSync(path.join('public', 'audio', 'white-noise.wav'));
-  const sweep = fs.readFileSync(path.join('public', 'audio', 'sweep.wav'));
+  const noise = fs.readFileSync(path.resolve(basePath, 'public', 'audio', 'white-noise.wav'));
+  const sweep = fs.readFileSync(path.resolve(basePath, 'public', 'audio', 'sweep.wav'));
 
   const buffers = {
     noise: await audioContext.decodeAudioData(noise.buffer),
