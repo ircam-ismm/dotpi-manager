@@ -1,5 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import module from 'node:module';
 
 import '@soundworks/helpers/polyfills.js';
 import { Server } from '@soundworks/core/server.js';
@@ -24,13 +26,23 @@ import { logger } from './controllers/logger.js';
 // - Issue Tracker:         https://github.com/collective-soundworks/soundworks/issues
 // - Wizard & Tools:        `npx soundworks`
 
+// in ESM module, no built-in require
+const require = module.createRequire(import.meta.url);
+
+const localFileName = fileURLToPath(import.meta.url);
+const localPath = path.dirname(localFileName);
+
 const config = loadConfig(process.env.ENV, import.meta.url);
 // pick a random port outside the port generally used by soundworks application
 const port = await getPort({ port: 9000, from: 9000 });
 config.env.port = port;
 
-const managerVersion = JSON5.parse(fs.readFileSync('package.json')).version;
-const soundworksVersion = JSON5.parse(fs.readFileSync('node_modules/@soundworks/core/package.json')).version;
+const selfPackageFile = path.resolve(localPath, '..', '..', 'package.json');
+const managerVersion = JSON5.parse(fs.readFileSync(selfPackageFile)).version;
+
+// waiting for version
+const soundworksPackageFile = path.resolve(require.resolve('@soundworks/core/server.js'), '..', '..', '..', 'package.json');
+const soundworksVersion = JSON5.parse(fs.readFileSync(soundworksPackageFile)).version;
 
 const dbPathname = path.join(process.cwd(), 'db.json');
 

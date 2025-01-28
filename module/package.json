@@ -1,0 +1,21 @@
+{
+  "name": "@dotpi/manager-module",
+  "description": "Manager module (dotpi client service))",
+  "authors": [],
+  "license": "BSD-3-Clause",
+  "version": "0.3.0",
+  "type": "module",
+  "scripts": {
+    "postinstall": "./dotpi_install",
+    "preuninstall": "./dotpi_uninstall",
+    "dotpi": "node node_modules/src/clients/thing/index.js"
+  },
+  "dependencies": {
+    "@dotpi/javascript": "^1.3.0",
+    "@dotpi/module": "^1.4.2",
+    "@dotpi/manager": "^0.3.0"
+  },
+  "devDependencies": {
+    "@ircam/eslint-config": "^1.3.0"
+  }
+}
