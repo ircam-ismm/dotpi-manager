@@ -7,6 +7,7 @@
       - [ ] launch server and clients --> need to choose the config
       - [ ] update app
       - [ ] etc.
+- [ ] back to active tab on relaunch
 
 - [ ] list of connected / disconnected clients issue (??)
 
