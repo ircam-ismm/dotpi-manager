@@ -8,10 +8,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import module from 'node:module';
 
+import { BROADCAST_PORT } from '@ircam/node-discovery';
 import '@soundworks/helpers/polyfills.js';
 import { Client } from '@soundworks/core/client.js';
 import launcher from '@soundworks/helpers/launcher.js';
 import pluginCheckin from '@soundworks/plugin-checkin/client.js';
+
 import getPort from 'get-port';
 import JSON5 from 'json5';
 
@@ -24,8 +26,8 @@ import { rebootAndShutdown } from './controllers/reboot-and-shutdown.js';
 import { debug } from './controllers/debug.js';
 // testing
 import { testPushLogs } from './testing/test-push-logs.js';
-
-import { DiscoveryClient, BROADCAST_PORT } from '@ircam/node-discovery';
+import { broadcastAddress } from './utils/broadcast-address.js';
+import discover from './utils/discover.js';
 
 // - General documentation: https://soundworks.dev/
 // - API documentation:     https://soundworks.dev/api
@@ -69,18 +71,26 @@ async function bootstrap() {
 
     console.log('>', hostname, BROADCAST_PORT, home, user, uid);
 
-    // look for the server on the network
-    const [rinfo, linfo] = await new Promise((resolve, reject) => {
-      const discoveryClient = new DiscoveryClient({
-        port: port,
-        payload: { hostname },
-      });
+    // find some server on each ipv4 and not 127.0.0.1 network interface, first promise resolved wins
+    const networkInterfaces = os.networkInterfaces();
+    const broadcastAddresses = [];
 
-      discoveryClient.on('connection', async (rinfo, linfo) => {
-        if (rinfo.payload.managerVersion !== managerVersion
-          || rinfo.payload.soundworksVersion !== soundworksVersion
-        ) {
-          console.warn(`
+    for (let name in networkInterfaces) {
+      for (let net of networkInterfaces[name]) {
+        if (net.family === 'IPv4' && net.address !== '127.0.0.1') {
+          const broadcast = broadcastAddress(net.address, net.netmask);
+          broadcastAddresses.push(broadcast);
+        }
+      }
+    }
+
+    const tryDiscover = broadcastAddresses.map(address => discover(address, port, hostname));
+    const [rinfo, linfo] = await Promise.race(tryDiscover);
+
+    if (rinfo.payload.managerVersion !== managerVersion
+      || rinfo.payload.soundworksVersion !== soundworksVersion
+    ) {
+      console.warn(`
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 WARNING
@@ -94,14 +104,7 @@ You should consider running:
 + \`sudo dotpi manager_update\` on your dotpi devices
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
-        }
-
-        resolve([rinfo, linfo]);
-      });
-
-      discoveryClient.on('close', () => {});
-      discoveryClient.start();
-    });
+    }
 
     // ---------------------------------------------------------
     // Launch soundworks client
